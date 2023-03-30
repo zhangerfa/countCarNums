@@ -70,11 +70,11 @@ def check_intersect(l1, l2, sq):
 #       非第一次越过检测线，则找到其驶入入口道的检测线id，返回(False, 入口道id)
 #   如果未越过检测线返回(False, None)
 #
-# detect_line_set: 检测线起讫点坐标（x1 y1 x2 y2）
+# enter_lane_set: 检测线起讫点坐标（x1 y1 x2 y2）
 # car_box: 车辆检测框左上和右下坐标（x1 y1 x2 y2）
 def get_enter_lane():
     # 检测当前车辆是否越过检测线
-    for line_id, line_pos in detect_line_set.items():
+    for line_id, line_pos in enter_lane_set.items():
         lx1, ly1, lx2, ly2 = line_pos
         if check_intersect((lx1, ly1), (lx2, ly2), car_box):
             # 当车辆越过一条检测线时，判断该车辆是否已从某进口道驶入
@@ -95,53 +95,66 @@ if __name__ == '__main__':
     width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
     # -------------------------------------------画检测线
-    # 初始化检测线---> 得到检测线坐标集合 detect_line_set
+    # 初始化检测线---> 得到检测线坐标集合 enter_lane_set
     print("开始画检测线")
+    print('''鼠标点击检测线起点，拖至检测线重点松开
+       画好检测线后，按下e w s n来表示这条检测线是东 西 南 北哪个方向的检测线，小写字母表示入口道，大写字母表示出口道
+       当画完所有检测线时按 s 退出''')
     ret, img = capture.read(0)
     ZERO = 1e-9
     start_x, start_y, end_x, end_y = -1, -1, -1, -1
     cv2.namedWindow('image', cv2.WINDOW_NORMAL)
     # 创建鼠标点击事件：点击和松开时将坐标赋予 start_x, start_y, end_x, end_y
     cv2.setMouseCallback('image', draw_line)
-    detect_line_set = {}
+    enter_lane_set = {}  # 入口道检测线坐标集合
+    exit_lane_set = {}  # 出口道检测线坐标集合
     while 1:
         cv2.imshow('image', img)
         k = cv2.waitKey(1)
         if k in [ord(x) for x in ['e', 'w', 'n', 's']]:
-            detect_line_set[chr(k)] = [start_x, start_y, end_x, end_y]
+            enter_lane_set[chr(k)] = [start_x, start_y, end_x, end_y]
             if k == ord('e'):
                 print("东进口道检测线已设置")
             elif k == ord('w'):
                 print("西进口道检测线已设置")
             elif k == ord('n'):
                 print("北进口道检测线已设置")
-            else:
-                print("南进口道检测线已设置")
+            elif k == ord('s'):
+                print("南出口道检测线已设置")
+        if k in [ord(x) for x in ['E', 'W', 'N', 'S']]:
+            exit_lane_set[chr(k)] = [start_x, start_y, end_x, end_y]
+            if k == ord('E'):
+                print("东出口道检测线已设置")
+            elif k == ord('W'):
+                print("西出口道检测线已设置")
+            elif k == ord('N'):
+                print("北出口道检测线已设置")
+            elif k == ord('S'):
+                print("南出口道检测线已设置")
         if k == ord('q'):
             break
     # 视频要压缩检测线对应缩短
-    for key in detect_line_set:
-        detect_line_set[key][0] = int(detect_line_set[key][0] * (960 / width))
-        detect_line_set[key][1] = int(detect_line_set[key][1] * (960 / width))
-        detect_line_set[key][2] = int(detect_line_set[key][2] * (540 / height))
-        detect_line_set[key][3] = int(detect_line_set[key][3] * (540 / height))
+    for lane_set in [enter_lane_set, exit_lane_set]:
+        for key in lane_set:
+            lane_set[key][0] = int(lane_set[key][0] * (960 / width))
+            lane_set[key][1] = int(lane_set[key][1] * (960 / width))
+            lane_set[key][2] = int(lane_set[key][2] * (540 / height))
+            lane_set[key][3] = int(lane_set[key][3] * (540 / height))
     cv2.destroyAllWindows()
     # --------------------------------------创建存储检测数据的数据结构
-    '''每条检测线有两个通过的车辆的哈希表，分别记录从这条检测线驶入和释出的车辆集合
-       当一条检测线A与车辆检测框相交时，遍历所有检测线驶入哈希表
-            如果所有检测线驶入哈希表中都无此车辆时，视此检测线为车辆驶入点，将车辆加入此检测线的驶入哈希表
-            找到一条检测线B的驶入哈希表中有此车辆时，则认为该车通过交叉口的路径为：B-A，B-A流向流量自增，B驶入哈希表中删去该车辆；
-       当车辆驶出检测区域时所有遍历所有驶出哈希表删除该车辆'''
-    # 以下字典均以 (驶入检测线id + 驶出检测线id) 作为key
-    enter_set_dict = {}  # 各检测线驶入车辆集合的哈希表
-    exit_set_dict = {}  # 各检测线驶出车辆集合的哈希表
-    count = {}  # 各流向流量表
+    '''每条检测线有一个通过的车辆的哈希表，入口道检测线的哈希表存储驶入交叉口的车辆；出口道检测线的哈希表存储驶出交叉口的车辆
+       当一条入口道检测线A第一次与车辆检测框相交时，A的哈希表中添加此车辆
+       当一条出口道检测线B第一次与车辆检测框相交时，遍历所有入口道哈希表找到该车辆的驶入入口道C，C的哈希表中删去此车辆，C-B流向流量 + 1
+       当车辆驶出检测区域时遍历所有驶出哈希表删除该车辆'''
+    enter_set_dict = {}  # 入口道检测线驶入车辆集合的哈希表
+    exit_set_dict = {}  # 出口道检测线驶出车辆集合的哈希表
+    count = {}  # 各流向流量表，key为：入口道+出口道
     enter_count = {}  # 入口道流量
-    for enter in detect_line_set.keys():
+    for enter in enter_lane_set.keys():
         enter_count[enter] = 0
         enter_set_dict[enter] = set()
         exit_set_dict[enter] = set()
-        for ex in detect_line_set.keys():
+        for ex in enter_lane_set.keys():
             count[enter + ex] = 0
     # -----------------------------------------图像处理
     # 创建检测器
@@ -176,9 +189,10 @@ if __name__ == '__main__':
                     break
         # ---------------------------------------将检测、追踪、流量统计信息写入图片
         # 图中画出检测线
-        for line in detect_line_set.values():
-            cv2.line(im, (line[0], line[1]), (line[2], line[3]),
-                     (0, 0, 255), 5)
+        for lane_set in [enter_lane_set, exit_lane_set]:
+            for line in lane_set.values():
+                cv2.line(im, (line[0], line[1]), (line[2], line[3]),
+                         (0, 0, 255), 5)
         # 画出检测和追踪结果画框
         output_image_frame = tracker.draw_bboxes(im, bbox_ls, line_thickness=None)
         # 将流量数据写入图片
