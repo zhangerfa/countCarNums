@@ -64,24 +64,28 @@ def check_intersect(l1, l2, sq):
 
 
 # ------------------------------------车辆通过交叉口驶入-驶出点提取的辅助函数
-# 获取车辆是否第一次越过检测线及驶入交叉口的入口道（检测线）id，返回值(是否第一次越过检测线, 入口道id)
+# 获取车辆是否第一次越过集合中的检测线及第一次越过的检测线id，返回值(是否第一次越过检测线, 第一次越过检测线的id)
 #   如果车辆越过检测线
-#       第一次越过检测线，则此检测线为其驶入交叉口的入口道，返回(True, 入口道id)；
-#       非第一次越过检测线，则找到其驶入入口道的检测线id，返回(False, 入口道id)
+#       第一次越过检测线，返回(True, 当前越过检测线id)；
+#       非第一次越过检测线，则找到其第一次越过的检测线id的检测线id，返回(False, 第一次越过检测线id)
 #   如果未越过检测线返回(False, None)
 #
 # enter_lane_set: 检测线起讫点坐标（x1 y1 x2 y2）
 # car_box: 车辆检测框左上和右下坐标（x1 y1 x2 y2）
-def get_enter_lane():
-    # 检测当前车辆是否越过检测线
-    for line_id, line_pos in enter_lane_set.items():
+def get_first_lane(lane_set, car_set_dict):
+    # 检测当前车辆是否越过集合中的检测线
+    for line_id, line_pos in lane_set.items():
         lx1, ly1, lx2, ly2 = line_pos
         if check_intersect((lx1, ly1), (lx2, ly2), car_box):
-            # 当车辆越过一条检测线时，判断该车辆是否已从某进口道驶入
-            for enter_id, enter_set in enter_set_dict.items():
-                if str(track_id) in enter_set:
-                    return False, None
+            # 当车辆越过一条检测线时，判断该车辆之前是否已越过该检测线
+            if track_id in car_set_dict[line_id]:
+                return False, line_id
             return True, line_id
+    # 当车辆不和集合中任何检测线相交时判断该车辆之前是否已近越过集合中任意检测线
+    for line_id, car_set in car_set_dict.items():
+        if track_id in car_set:
+            return False, line_id
+    # 车辆从未越过集合中的检测线
     return False, None
 
 
@@ -90,10 +94,15 @@ if __name__ == '__main__':
     # 打开视频
     video_path = r'..\video\70m.mp4'
     capture = cv2.VideoCapture(video_path)
+    # 指定输出视频文件
+    output_path = r'../video/output/output.avi'
     # 获取视频FPS和尺寸
     fps = capture.get(cv2.CAP_PROP_FPS)
     width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    # 设置输出视频大小
+    out_width = 1680
+    out_height = int(out_width / width * height)
     # -------------------------------------------画检测线
     # 初始化检测线---> 得到检测线坐标集合 enter_lane_set
     print("开始画检测线")
@@ -131,43 +140,47 @@ if __name__ == '__main__':
                 print("北出口道检测线已设置")
             elif k == ord('S'):
                 print("南出口道检测线已设置")
-        if k == ord('q'):
+        if k in [ord(x) for x in ['q', 'Q']]:
             break
     # 视频要压缩检测线对应缩短
     for lane_set in [enter_lane_set, exit_lane_set]:
         for key in lane_set:
-            lane_set[key][0] = int(lane_set[key][0] * (960 / width))
-            lane_set[key][1] = int(lane_set[key][1] * (960 / width))
-            lane_set[key][2] = int(lane_set[key][2] * (540 / height))
-            lane_set[key][3] = int(lane_set[key][3] * (540 / height))
+            lane_set[key][0] = int(lane_set[key][0] * (out_width / width))
+            lane_set[key][1] = int(lane_set[key][1] * (out_width / width))
+            lane_set[key][2] = int(lane_set[key][2] * (out_height / height))
+            lane_set[key][3] = int(lane_set[key][3] * (out_height / height))
     cv2.destroyAllWindows()
     # --------------------------------------创建存储检测数据的数据结构
     '''每条检测线有一个通过的车辆的哈希表，入口道检测线的哈希表存储驶入交叉口的车辆；出口道检测线的哈希表存储驶出交叉口的车辆
        当一条入口道检测线A第一次与车辆检测框相交时，A的哈希表中添加此车辆
        当一条出口道检测线B第一次与车辆检测框相交时，遍历所有入口道哈希表找到该车辆的驶入入口道C，C的哈希表中删去此车辆，C-B流向流量 + 1
        当车辆驶出检测区域时遍历所有驶出哈希表删除该车辆'''
-    enter_set_dict = {}  # 入口道检测线驶入车辆集合的哈希表
-    exit_set_dict = {}  # 出口道检测线驶出车辆集合的哈希表
-    count = {}  # 各流向流量表，key为：入口道+出口道
-    enter_count = {}  # 入口道流量
+    enter_car_set_dict = {}  # 入口道检测线驶入车辆集合的哈希表
+    exit_car_set_dict = {}  # 出口道检测线驶出车辆集合的哈希表
+    count_dict = {}  # 各流向流量表，key为：入口道+出口道
+    enter_count_dict = {}  # 入口道流量
     for enter in enter_lane_set.keys():
-        enter_count[enter] = 0
-        enter_set_dict[enter] = set()
-        exit_set_dict[enter] = set()
-        for ex in enter_lane_set.keys():
-            count[enter + ex] = 0
+        enter_count_dict[enter] = 0
+        enter_car_set_dict[enter] = set()
+        for ex in exit_lane_set.keys():
+            exit_car_set_dict[ex] = set()
+            count_dict[enter + ex] = 0
     # -----------------------------------------图像处理
     # 创建检测器
     detector = Detector()
-
+    # 定义输出视频编解码器
+    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    # 创建输出视频对象
+    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    # 处理图片
     while True:
         # 读取每帧图片
         _, im = capture.read()
         if im is None:
             break
 
-        # 缩小尺寸，1920x1080->960x540
-        im = cv2.resize(im, (960, 540))
+        # 缩小尺寸
+        im = cv2.resize(im, (out_width, out_height))
         # --------------------------------------------检测、追踪、流量统计
         # 检测当前帧
         bboxes = detector.detect(im)
@@ -181,12 +194,20 @@ if __name__ == '__main__':
             for bbox in bbox_ls:
                 cx1, cy1, cx2, cy2, label, track_id = bbox
                 car_box = [cx1, cy1, cx2, cy2]
-                # 判断车辆是否第一次越过检测线并获取车辆驶入进口道id
-                ret, lane_id = get_enter_lane()
+                # 车辆第一次越过入口道则将其加入该入口道的哈希表，该入口道流量 + 1
+                # 车辆非第一次越过入口道则判断其是否第一次越过出口道，是则其驶入入口道哈希表中删去此车辆，该流向流量 + 1
+                ret, lane_id = get_first_lane(enter_lane_set, enter_car_set_dict)  # 返回(是否第一次越过入口道， 第一次越过入口道的id)
                 if ret:
-                    enter_set_dict[lane_id].add(str(track_id))
-                    enter_count[lane_id] = enter_count[lane_id] + 1
-                    break
+                    # 第一次越过入口道
+                    enter_car_set_dict[lane_id].add(track_id)
+                    enter_count_dict[lane_id] = enter_count_dict[lane_id] + 1
+                elif lane_id is not None:
+                    # 非第一次越过入口道
+                    ret, exit_lane_id = get_first_lane(exit_lane_set, exit_car_set_dict)
+                    if ret:
+                        # 第一次越过出口道
+                        exit_car_set_dict[exit_lane_id].add(track_id)
+                        count_dict[lane_id + exit_lane_id] = count_dict[lane_id + exit_lane_id] + 1
         # ---------------------------------------将检测、追踪、流量统计信息写入图片
         # 图中画出检测线
         for lane_set in [enter_lane_set, exit_lane_set]:
@@ -196,16 +217,31 @@ if __name__ == '__main__':
         # 画出检测和追踪结果画框
         output_image_frame = tracker.draw_bboxes(im, bbox_ls, line_thickness=None)
         # 将流量数据写入图片
+        i = 0
+        text_count = 0
         text_draw = ''
-        for lane_id, count in enter_count.items():
-            text_draw = text_draw + lane_id + ": " + str(count) + "   "
-        output_image_frame = cv2.putText(img=output_image_frame, text=text_draw,
-                                         org=(int(960 * 0.01), int(540 * 0.05)),
-                                         fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                                         fontScale=1, color=(0, 0, 255), thickness=2)
+        for count_dict in [enter_count_dict, count_dict]:
+            for lane_id, c in count_dict.items():
+                text_draw = text_draw + lane_id + ": " + str(c) + "   "
+                text_count = text_count + 1
+                if text_count % 4 == 0:
+                    output_image_frame = cv2.putText(img=output_image_frame, text=text_draw,
+                                                     org=(int(out_width * 0.01), int(out_height * 0.05 * (i + 1))),
+                                                     fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                                                     fontScale=1, color=(0, 0, 255), thickness=2)
+                    i = i + 1
+                    text_draw = ''
+        if text_count % 4 != 0:
+            output_image_frame = cv2.putText(img=output_image_frame, text=text_draw,
+                                             org=(int(out_width * 0.01), int(out_height * 0.05 * (i + 1))),
+                                             fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                                             fontScale=1, color=(0, 0, 255), thickness=2)
         # 实时展示处理结果
         cv2.imshow('demo', output_image_frame)
         cv2.waitKey(1)
+        # 写入输出视频
+        out.write(output_image_frame)
     # 释放资源
     capture.release()
+    out.release()
     cv2.destroyAllWindows()
