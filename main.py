@@ -184,6 +184,12 @@ if __name__ == '__main__':
         # --------------------------------------------检测、追踪、流量统计
         # 检测当前帧
         bboxes = detector.detect(im)
+        # 不需要再存储的车辆集合，初始值为所有检测线记录的车辆集合的交集
+        # 当当前帧中出现一辆车时从该集合中删去该车，最终剩下的车辆从检测线记录的车辆集合中删除
+        remove_car_set = set()
+        for car_set_dict in [enter_car_set_dict, exit_car_set_dict]:
+            for car_set in car_set_dict.values():
+                remove_car_set = remove_car_set.union(car_set)
         # 画出追踪框和更新流量数据
         output_image_frame = im
         bbox_ls = []
@@ -193,6 +199,9 @@ if __name__ == '__main__':
             # 流量更新
             for bbox in bbox_ls:
                 cx1, cy1, cx2, cy2, label, track_id = bbox
+                # 车辆还未驶出检测区域
+                if track_id in remove_car_set:
+                    remove_car_set.remove(track_id)
                 car_box = [cx1, cy1, cx2, cy2]
                 # 车辆第一次越过入口道则将其加入该入口道的哈希表，该入口道流量 + 1
                 # 车辆非第一次越过入口道则判断其是否第一次越过出口道，是则其驶入入口道哈希表中删去此车辆，该流向流量 + 1
@@ -208,6 +217,12 @@ if __name__ == '__main__':
                         # 第一次越过出口道
                         exit_car_set_dict[exit_lane_id].add(track_id)
                         count_dict[lane_id + exit_lane_id] = count_dict[lane_id + exit_lane_id] + 1
+        # 删去所有已驶出检测区域的车辆
+        for car_set_dict in [enter_car_set_dict, exit_car_set_dict]:
+            for car_set in car_set_dict.values():
+                for remove_id in remove_car_set:
+                    if remove_id in car_set:
+                        car_set.remove(remove_id)
         # ---------------------------------------将检测、追踪、流量统计信息写入图片
         # 图中画出检测线
         for lane_set in [enter_lane_set, exit_lane_set]:
