@@ -5,11 +5,11 @@ import os
 import shutil
 
 # xml路径的地址
-XmlPath = r'F:\zhangBo\train\DETRAC\Annotations'
+XmlPath = r'F:\zhangBo\train\DETRAC\Annotations\test'
 # 原图片的地址
-pictureBasePath = r"F:\zhangBo\train\DETRAC\Insight-MVT_Annotation_Train"
+pictureBasePath = r"F:\zhangBo\train\DETRAC\data\Insight-MVT_Annotation_Test"
 # 保存图片的地址
-saveBasePath = r"F:\zhangBo\train\DETRAC\Images"
+saveBasePath = r"F:\zhangBo\train\DETRAC\Images\test"
 
 total_xml = os.listdir(XmlPath)
 num = len(total_xml)

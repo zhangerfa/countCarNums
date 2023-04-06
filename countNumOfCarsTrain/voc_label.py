@@ -88,7 +88,7 @@ def get_image_txt(in_path, out_path, set_name):
 
 
 if __name__ == "__main__":
-    for set_name in ["train"]:
+    for set_name in ["train", 'test']:
         path = r"F:\zhangBo\train\DETRAC"
         annotation_path = path + r"\Annotations"
         images_path = path + r"\Images"

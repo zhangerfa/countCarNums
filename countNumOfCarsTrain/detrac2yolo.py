@@ -4,9 +4,9 @@ import os
 import xml.etree.ElementTree as ET
 
 # DETRAC-Train-Annotations-XML---内涵xml文件
-xmlDir=r"F:\zhangBo\train\DETRAC\DETRAC-Train-Annotations-XML"
+xmlDir=r"F:\zhangBo\train\DETRAC\data\DETRAC-Test-Annotations-XML"
 # 转换的xml文件保存位置
-new_dir=r"F:\zhangBo\train\DETRAC\Annotations"
+new_dir=r"F:\zhangBo\train\DETRAC\Annotations\test"
 
 # 转换xml文件
 def bboxes2xml(folder, img_name, width, height, gts, xml_save_to):
