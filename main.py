@@ -1,5 +1,7 @@
+from sahi import AutoDetectionModel
+from sahi.predict import get_sliced_prediction
+
 import tracker
-from detector import Detector
 import cv2
 
 import os
@@ -92,7 +94,7 @@ def get_first_lane(lane_set, car_set_dict):
 if __name__ == '__main__':
     # -------------------------------------------读入并获取视频信息
     # 打开视频
-    video_path = r'..\video\70m.mp4'
+    video_path = r'..\video\222.mp4'
     capture = cv2.VideoCapture(video_path)
     # 指定输出视频文件
     output_path = r'../video/output/output.avi'
@@ -167,7 +169,15 @@ if __name__ == '__main__':
             count_dict[enter + ex] = 0
     # -----------------------------------------图像处理
     # 创建检测器
-    detector = Detector()
+    # detector = Detector()
+    # 建立检测对象
+    detector = AutoDetectionModel.from_pretrained(
+        model_type='yolov5',
+        model_path=r"weights/yolov5x.pt",
+        config_path=r"weights/yolov5x.yaml",
+        confidence_threshold=0.2,
+        device="cuda:0"
+    )
     # 定义输出视频编解码器
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
     # 创建输出视频对象
@@ -183,7 +193,21 @@ if __name__ == '__main__':
         im = cv2.resize(im, (out_width, out_height))
         # --------------------------------------------检测、追踪、流量统计
         # 检测当前帧
-        bboxes = detector.detect(im)
+        result = get_sliced_prediction(
+            im,
+            detector,
+            slice_height=200,
+            slice_width=200,
+            overlap_height_ratio=0.2,
+            overlap_width_ratio=0.2
+        )
+        # 将sahi检测结果转换为[x1, y1, x2, y2, clsID, conf]格式
+        bboxes = []
+        for x in result.object_prediction_list:
+            voc_bbox = x.bbox.to_voc_bbox()
+            voc_bbox.append(x.category.id)
+            voc_bbox.append(x.score.value)
+            bboxes.append(voc_bbox)
         # 不需要再存储的车辆集合，初始值为所有检测线记录的车辆集合的交集
         # 当当前帧中出现一辆车时从该集合中删去该车，最终剩下的车辆从检测线记录的车辆集合中删除
         remove_car_set = set()
@@ -230,7 +254,23 @@ if __name__ == '__main__':
                 cv2.line(im, (line[0], line[1]), (line[2], line[3]),
                          (0, 0, 255), 5)
         # 画出检测和追踪结果画框
-        output_image_frame = tracker.draw_bboxes(im, bbox_ls, line_thickness=None)
+        # output_image_frame = tracker.draw_bboxes(im, bbox_ls, line_thickness=None)
+
+        # 从结果中提取车辆检测框并绘制到原始帧上
+        for pre_ls in result.object_prediction_list:
+            # 检测框坐标
+            xyxy = pre_ls.bbox.to_xyxy()
+            x1 = xyxy[0]
+            y1 = xyxy[1]
+            x2 = xyxy[2]
+            y2 = xyxy[3]
+            # 置信度
+            conf = pre_ls.score.value
+            # 类别{id, train}
+            cls = pre_ls.category
+
+            if cls.id == 2:
+                cv2.rectangle(output_image_frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
         # 将流量数据写入图片
         i = 0
         text_count = 0
@@ -253,9 +293,9 @@ if __name__ == '__main__':
                                              fontScale=1, color=(0, 0, 255), thickness=2)
         # 实时展示处理结果
         cv2.imshow('demo', output_image_frame)
-        cv2.waitKey(1)
+        cv2.waitKey(1000)
         # 写入输出视频
-        out.write(output_image_frame)
+        # out.write(output_image_frame)
     # 释放资源
     capture.release()
     out.release()

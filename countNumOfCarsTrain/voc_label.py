@@ -48,22 +48,22 @@ def convert_annotation(in_path, out_path, set_txt_path, classes):
             if cls not in classes or int(difficult) == 1:
                 continue
             cls_id = classes.index(cls)
-            xmlbox = obj.find('robndbox')
-            cx = float(xmlbox.find('cx').text)
-            cy = float(xmlbox.find('cy').text)
-            ch = float(xmlbox.find('w').text)
-            cw = float(xmlbox.find('h').text)
+            xmlbox = obj.find('bndbox')
+            x1 = float(xmlbox.find('xmin').text)
+            y1 = float(xmlbox.find('ymin').text)
+            x2 = float(xmlbox.find('xmax').text)
+            y2 = float(xmlbox.find('ymax').text)
             # 标注越界修正
-            if cw > w:
-                cw = w
-            if ch > h:
-                ch = h
-            if cx > w:
-                cx = w
-            if cy > h:
-                cy = h
+            if y2 > w:
+                y2 = w
+            if x2 > h:
+                x2 = h
+            if x1 > w:
+                x1 = w
+            if y1 > h:
+                y1 = h
             # 坐标归一化
-            bb = normalize_coordinates(cx, cy, cw, ch, w, h)
+            bb = normalize_coordinates(x1, y1, y2, x2, w, h)
             # 写入yolo_txt文件
             out_file.write(str(cls_id) + " " + " ".join([str(a) for a in bb]) + '\n')
 
@@ -88,16 +88,16 @@ def get_image_txt(in_path, out_path, set_name):
 
 
 if __name__ == "__main__":
-    for set_name in ["test", "train"]:
-        path = rf"F:\zhangBo\oneDrive\code\python\countNumOfCars\train"
+    for set_name in ["train"]:
+        path = r"F:\zhangBo\train\DETRAC"
         annotation_path = path + r"\Annotations"
-        images_path = path + r"\images"
+        images_path = path + r"\Images"
         labels_path = path + r"\labels"
         # 获取数据集所有图片名的txt文件
         get_image_txt(images_path + fr"\{set_name}", path, set_name)
         # 将annotation文件中信息转换为yolo_txt格式
         # 分类
-        classes = ["car"]
+        classes = ["car", "bus"]
         convert_annotation(annotation_path + fr"\{set_name}",
                            labels_path + rf"\{set_name}",
                            path + rf"\{set_name}.txt", classes)

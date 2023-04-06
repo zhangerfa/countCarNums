@@ -1,5 +1,5 @@
-weights/:
-# Byte-compiled / optimized / DLL files
+/weights/*
+/ DLL files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -128,4 +128,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-/weights/best.pt
