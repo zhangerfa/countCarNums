@@ -1,5 +1,5 @@
 # 数据集的根目录
-path: F:\zhangBo\train\DETRAC\images
+path: F:\zhangBo\train\DETRAC-small\images
 train: train  # 训练集与path的相对路径
 val: test   # 验证集与path的相对路径
 test:  # 测试集与path的相对路径

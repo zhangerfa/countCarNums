@@ -89,9 +89,9 @@ def get_image_txt(in_path, out_path, set_name):
 
 if __name__ == "__main__":
     for set_name in ["train", 'test']:
-        path = r"F:\zhangBo\train\DETRAC"
+        path = r"F:\zhangBo\train\DETRAC-small"
         annotation_path = path + r"\Annotations"
-        images_path = path + r"\Images"
+        images_path = path + r"\images"
         labels_path = path + r"\labels"
         # 获取数据集所有图片名的txt文件
         get_image_txt(images_path + fr"\{set_name}", path, set_name)
