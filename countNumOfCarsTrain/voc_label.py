@@ -54,16 +54,18 @@ def convert_annotation(in_path, out_path, set_txt_path, classes):
             x2 = float(xmlbox.find('xmax').text)
             y2 = float(xmlbox.find('ymax').text)
             # 标注越界修正
-            if y2 > w:
-                y2 = w
-            if x2 > h:
-                x2 = h
+            if y2 > h:
+                y2 = h
+            if x2 > w:
+                x2 = w
             if x1 > w:
                 x1 = w
             if y1 > h:
                 y1 = h
+            # xyxy转换为xywh格式
+            xc, yc, bw, bh = xyxy2xywh(x1, y1, x2, y2)
             # 坐标归一化
-            bb = normalize_coordinates(x1, y1, y2, x2, w, h)
+            bb = normalize_coordinates(xc, yc, bw, bh, w, h)
             # 写入yolo_txt文件
             out_file.write(str(cls_id) + " " + " ".join([str(a) for a in bb]) + '\n')
 
@@ -85,6 +87,16 @@ def get_image_txt(in_path, out_path, set_name):
             # 写入文件名到 txt 文件中
             f.write(filename + '\n')
     f.close()
+
+
+# 将(xmin, ymin, xmax, ymax)转换为 (xc, yc, w, h)格式
+# xc为矩形中心点的横坐标，yc为矩形中心点的纵坐标，w为矩形的宽度，h为矩形的高度。
+def xyxy2xywh(xmin, ymin, xmax, ymax):
+    xc = (xmin + xmax) / 2
+    yc = (ymin + ymax) / 2
+    w = xmax - xmin
+    h = ymax - ymin
+    return xc, yc, w, h
 
 
 if __name__ == "__main__":
