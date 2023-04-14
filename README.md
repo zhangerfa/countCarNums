@@ -4,7 +4,23 @@
 ### 训练数据
 - 无人机航拍视角使用[UAV-ROD](https://github.com/fengkaibit/UAV-ROD) 数据，经过测试在大疆MiNi2拍摄下飞行高度100m内检测精度足够完成流量统计
 - 位于制高点的道路监控视角使用自己标注的数据
-### 使用方法
+## 使用方法
+### 安装依赖
+使用conda
+```commandline
+conda install --yes --file requirements.txt
+```
+使用pip
+```commandline
+pip install -r requirements.txt
+```
+本地运行环境中主要依赖版本如下：
+```text
+pytorch-cuda = 11.7
+torchvision = 0.14.0
+cuda = 11.7
+```
+### 基础配置
 在main.py中对以下信息进行配置即可运行
 ```python
 use_sahi = False  # 是否使用 sahi 算法增强检测结果
@@ -34,7 +50,7 @@ tracker.py  --  封装了deep_sort模型的创建和使用
 train.py
 val.py
 ```
-### 待做功能
+## 待做功能
 - [x] 绘制检测线
 - [x] 各流向流量统计
 - [ ] 克服无人机镜头偏移造成的检测线偏移
