@@ -10,8 +10,8 @@ from sahi.utils.cv import read_image_as_pil
 # 建立检测对象
 detection_model = AutoDetectionModel.from_pretrained(
     model_type='yolov5',
-    model_path=r"weights/yolov5x.pt",
-    config_path=r"models/yolov5x.yaml",
+    model_path=r"../weights/yolov5x.pt",
+    config_path=r"../models/yolov5x.yaml",
     confidence_threshold=0.2,
     device="cuda:0"
 )

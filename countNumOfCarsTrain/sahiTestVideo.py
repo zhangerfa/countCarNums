@@ -18,7 +18,7 @@ detection_model = AutoDetectionModel.from_pretrained(
 )
 
 # 打开原视频
-path = r"../video/test.mp4"
+path = r"../../video/test.mp4"
 video = cv2.VideoCapture(path)
 
 # 读取视频的帧速率和尺寸
