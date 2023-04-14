@@ -100,8 +100,8 @@ def xyxy2xywh(xmin, ymin, xmax, ymax):
 
 
 if __name__ == "__main__":
-    for set_name in ["train", 'test']:
-        path = r"F:\zhangBo\train\DETRAC-small"
+    for set_name in ["train", "test"]:
+        path = r"F:\zhangBo\train\JianKong\JinXinGuoJi-small"
         annotation_path = path + r"\Annotations"
         images_path = path + r"\images"
         labels_path = path + r"\labels"
@@ -109,7 +109,7 @@ if __name__ == "__main__":
         get_image_txt(images_path + fr"\{set_name}", path, set_name)
         # 将annotation文件中信息转换为yolo_txt格式
         # 分类
-        classes = ["car", "bus"]
-        convert_annotation(annotation_path + fr"\{set_name}",
-                           labels_path + rf"\{set_name}",
-                           path + rf"\{set_name}.txt", classes)
+        # classes = ["car", "bus"]
+        # convert_annotation(annotation_path + fr"\{set_name}",
+        #                    labels_path + rf"\{set_name}",
+        #                    path + rf"\{set_name}.txt", classes)

@@ -11,12 +11,12 @@ from sahi.utils.cv import read_image_as_pil
 detection_model = AutoDetectionModel.from_pretrained(
     model_type='yolov5',
     model_path=r"weights/yolov5x.pt",
-    config_path=r"weights/yolov5x.yaml",
+    config_path=r"models/yolov5x.yaml",
     confidence_threshold=0.2,
     device="cuda:0"
 )
 
-path = r"F:\下载\111.png"
+path = r"F:\下载\test.jpg"
 image = read_image_as_pil(path)
 
 result = get_sliced_prediction(

@@ -6,13 +6,13 @@ import cv2
 
 # 加载YOLOv5模型
 path = r"F:\zhangBo\oneDrive\code\python\countNumOfCars\yolov5-master"
-model = torch.hub.load(source='local', path=path + r"\best.pt", repo_or_dir=path,
+model = torch.hub.load(source='local', path=path + r"weights\best-DETRAC-5000.pt", repo_or_dir=path,
                        model="custom", force_reload=True)
 
 # 读入图片
 # img_path = r"F:\zhangBo\oneDrive\code\python\countNumOfCars\video\1.png"
 # img_path = r"F:\zhangBo\oneDrive\code\python\countNumOfCars\video\small.png"
-img_path = r"F:\zhangBo\oneDrive\code\python\countNumOfCars\train\images\test\DJI_0005_000030.jpg"
+img_path = r"F:\下载\111.png"
 img = cv2.imread(img_path)
 
 results = model(img)
