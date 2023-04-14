@@ -1,10 +1,13 @@
-from sahi import AutoDetectionModel
 from sahi.predict import get_sliced_prediction
+
+from detector import Detector
 
 import tracker
 import cv2
 
 import os
+
+from sahi import AutoDetectionModel
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
@@ -92,17 +95,21 @@ def get_first_lane(lane_set, car_set_dict):
 
 
 if __name__ == '__main__':
+    # -------------------------------------配置信息
+    use_sahi = False  # 是否使用 sahi 算法增强检测结果
+    save_video = False  # 是否存储检测视频
+    show_video = False  # 是否展示检测过程
+    video_path = r'F:\zhangBo\video\70m.mp4'  # 视频路径
+    output_path = r'../video/output/output.avi'  # 指定输出视频文件
+    weight_path = r'./weights/best-UAV-ROD.pt'  # 权重文件路径
     # -------------------------------------------读入并获取视频信息
     # 打开视频
-    video_path = r'..\video\222.mp4'
     capture = cv2.VideoCapture(video_path)
-    # 指定输出视频文件
-    output_path = r'../video/output/output.avi'
     # 获取视频FPS和尺寸
     fps = capture.get(cv2.CAP_PROP_FPS)
     width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    # 设置输出视频大小
+    # 设置展示视频大小
     out_width = 1680
     out_height = int(out_width / width * height)
     # -------------------------------------------画检测线
@@ -169,15 +176,16 @@ if __name__ == '__main__':
             count_dict[enter + ex] = 0
     # -----------------------------------------图像处理
     # 创建检测器
-    # detector = Detector()
-    # 建立检测对象
-    detector = AutoDetectionModel.from_pretrained(
-        model_type='yolov5',
-        model_path=r"weights/yolov5x.pt",
-        config_path=r"weights/yolov5x.yaml",
-        confidence_threshold=0.2,
-        device="cuda:0"
-    )
+    if use_sahi:
+        detector = AutoDetectionModel.from_pretrained(
+            model_type='yolov5',
+            model_path=weight_path,
+            config_path=r"models/yolov5x.yaml",
+            confidence_threshold=0.2,
+            device="cuda:0"
+        )
+    else:
+        detector = Detector(weight_path)
     # 定义输出视频编解码器
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
     # 创建输出视频对象
@@ -192,22 +200,25 @@ if __name__ == '__main__':
         # 缩小尺寸
         im = cv2.resize(im, (out_width, out_height))
         # --------------------------------------------检测、追踪、流量统计
-        # 检测当前帧
-        result = get_sliced_prediction(
-            im,
-            detector,
-            slice_height=200,
-            slice_width=200,
-            overlap_height_ratio=0.2,
-            overlap_width_ratio=0.2
-        )
-        # 将sahi检测结果转换为[x1, y1, x2, y2, clsID, conf]格式
-        bboxes = []
-        for x in result.object_prediction_list:
-            voc_bbox = x.bbox.to_voc_bbox()
-            voc_bbox.append(x.category.id)
-            voc_bbox.append(x.score.value)
-            bboxes.append(voc_bbox)
+        # 检测当前帧 -> 获得 bboxes（[x1, y1, x2, y2, clsID, conf]列表）
+        if use_sahi:
+            result = get_sliced_prediction(
+                im,
+                detector,
+                slice_height=200,
+                slice_width=200,
+                overlap_height_ratio=0.2,
+                overlap_width_ratio=0.2
+            )
+            # 将sahi检测结果转换为[x1, y1, x2, y2, clsID, conf]格式
+            bboxes = []
+            for x in result.object_prediction_list:
+                voc_bbox = x.bbox.to_voc_bbox()
+                voc_bbox.append(x.category.id)
+                voc_bbox.append(x.score.value)
+                bboxes.append(voc_bbox)
+        else:
+            bboxes = detector.detect(im)
         # 不需要再存储的车辆集合，初始值为所有检测线记录的车辆集合的交集
         # 当当前帧中出现一辆车时从该集合中删去该车，最终剩下的车辆从检测线记录的车辆集合中删除
         remove_car_set = set()
@@ -248,54 +259,46 @@ if __name__ == '__main__':
                     if remove_id in car_set:
                         car_set.remove(remove_id)
         # ---------------------------------------将检测、追踪、流量统计信息写入图片
-        # 图中画出检测线
-        for lane_set in [enter_lane_set, exit_lane_set]:
-            for line in lane_set.values():
-                cv2.line(im, (line[0], line[1]), (line[2], line[3]),
-                         (0, 0, 255), 5)
-        # 画出检测和追踪结果画框
-        # output_image_frame = tracker.draw_bboxes(im, bbox_ls, line_thickness=None)
-
-        # 从结果中提取车辆检测框并绘制到原始帧上
-        for pre_ls in result.object_prediction_list:
-            # 检测框坐标
-            xyxy = pre_ls.bbox.to_xyxy()
-            x1 = xyxy[0]
-            y1 = xyxy[1]
-            x2 = xyxy[2]
-            y2 = xyxy[3]
-            # 置信度
-            conf = pre_ls.score.value
-            # 类别{id, train}
-            cls = pre_ls.category
-
-            if cls.id == 2:
-                cv2.rectangle(output_image_frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
-        # 将流量数据写入图片
-        i = 0
-        text_count = 0
-        text_draw = ''
-        for count_dict in [enter_count_dict, count_dict]:
-            for lane_id, c in count_dict.items():
-                text_draw = text_draw + lane_id + ": " + str(c) + "   "
-                text_count = text_count + 1
-                if text_count % 4 == 0:
-                    output_image_frame = cv2.putText(img=output_image_frame, text=text_draw,
-                                                     org=(int(out_width * 0.01), int(out_height * 0.05 * (i + 1))),
-                                                     fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                                                     fontScale=1, color=(0, 0, 255), thickness=2)
-                    i = i + 1
-                    text_draw = ''
-        if text_count % 4 != 0:
-            output_image_frame = cv2.putText(img=output_image_frame, text=text_draw,
-                                             org=(int(out_width * 0.01), int(out_height * 0.05 * (i + 1))),
-                                             fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                                             fontScale=1, color=(0, 0, 255), thickness=2)
-        # 实时展示处理结果
-        cv2.imshow('demo', output_image_frame)
-        cv2.waitKey(1000)
-        # 写入输出视频
-        # out.write(output_image_frame)
+        if show_video or save_video:
+            # 图中画出检测线
+            for lane_set in [enter_lane_set, exit_lane_set]:
+                for name, line in lane_set.items():
+                    cv2.line(im, (line[0], line[1]), (line[2], line[3]),
+                             (0, 0, 255), 5)
+                    # 标记检测线名称
+                    cv2.putText(img=output_image_frame, text=name,
+                                org=(int(line[0]), int(line[1] + 0.1)),
+                                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                                fontScale=1, color=(0, 0, 255), thickness=2)
+            # 画出检测和追踪结果画框
+            output_image_frame = tracker.draw_bboxes(im, bbox_ls, line_thickness=None)
+            # 将流量数据写入图片
+            i = 0
+            text_count = 0
+            text_draw = ''
+            for count_dict in [enter_count_dict, count_dict]:
+                for lane_id, c in count_dict.items():
+                    text_draw = text_draw + lane_id + ": " + str(c) + "   "
+                    text_count = text_count + 1
+                    if text_count % 4 == 0:
+                        output_image_frame = cv2.putText(img=output_image_frame, text=text_draw,
+                                                         org=(int(out_width * 0.01), int(out_height * 0.05 * (i + 1))),
+                                                         fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                                                         fontScale=1, color=(0, 0, 255), thickness=2)
+                        i = i + 1
+                        text_draw = ''
+            if text_count % 4 != 0:
+                output_image_frame = cv2.putText(img=output_image_frame, text=text_draw,
+                                                 org=(int(out_width * 0.01), int(out_height * 0.05 * (i + 1))),
+                                                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                                                 fontScale=1, color=(0, 0, 255), thickness=2)
+            if show_video:
+                # 实时展示处理结果
+                cv2.imshow('demo', output_image_frame)
+                cv2.waitKey(1)
+            if save_video:
+                # 写入输出视频
+                out.write(output_image_frame)
     # 释放资源
     capture.release()
     out.release()

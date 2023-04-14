@@ -9,12 +9,12 @@ from utils.torch_utils import select_device
 
 class Detector:
 
-    def __init__(self):
+    def __init__(self, weights):
         self.img_size = 640
         self.threshold = 0.3
         self.stride = 1
 
-        self.weights = './weights/best.pt'
+        self.weights = weights
 
         self.device = '0' if torch.cuda.is_available() else 'cpu'
         self.device = select_device(self.device)
