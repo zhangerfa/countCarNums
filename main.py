@@ -98,10 +98,11 @@ if __name__ == '__main__':
     # -------------------------------------配置信息
     use_sahi = False  # 是否使用 sahi 算法增强检测结果
     save_video = False  # 是否存储检测视频
-    show_video = False  # 是否展示检测过程
-    video_path = r'F:\zhangBo\video\70m.mp4'  # 视频路径
+    show_video = True  # 是否展示检测过程
+    video_path = r'F:\下载\test.mp4'  # 视频路径
+    excel_save_path = r'F:\zhangBo\video\data\JinXinGuoJi.xlsx'
     output_path = r'../video/output/output.avi'  # 指定输出视频文件
-    weight_path = r'./weights/best-UAV-ROD.pt'  # 权重文件路径
+    weight_path = r'./weights/best-jiankong-800.pt'  # 权重文件路径
     # -------------------------------------------读入并获取视频信息
     # 打开视频
     capture = cv2.VideoCapture(video_path)
@@ -303,3 +304,20 @@ if __name__ == '__main__':
     capture.release()
     out.release()
     cv2.destroyAllWindows()
+    # -------------------------------- 将数据保存到excel中
+    import pandas as pd
+
+    # 创建ExcelWriter对象
+    writer = pd.ExcelWriter(excel_save_path, engine='xlsxwriter')
+    # 写入进口道流量
+    pd.DataFrame({"入口道流量": enter_count_dict}).to_excel(writer, sheet_name='入口道流量', index=True)
+    # 写入各流向流量
+    # 将流量流量字典转化内dataframe格式
+    df_count = {}
+    for enter in enter_lane_set.keys():
+        df_count[enter] = tmp = {}
+        for ex in exit_lane_set.keys():
+            tmp[ex] = count_dict[enter + ex]
+    pd.DataFrame(df_count).to_excel(writer, sheet_name='各流向流量', index=True)
+    # 保存Excel文件
+    writer.save()
