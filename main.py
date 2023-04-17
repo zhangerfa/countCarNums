@@ -79,9 +79,11 @@ def check_intersect(l1, l2, sq):
 # enter_lane_set: 检测线起讫点坐标（x1 y1 x2 y2）
 # car_box: 车辆检测框左上和右下坐标（x1 y1 x2 y2）
 def get_first_lane(lane_set, car_set_dict):
+    global track_id
     # 检测当前车辆是否越过集合中的检测线
     for line_id, line_pos in lane_set.items():
         lx1, ly1, lx2, ly2 = line_pos
+        global car_box
         if check_intersect((lx1, ly1), (lx2, ly2), car_box):
             # 当车辆越过一条检测线时，判断该车辆之前是否已越过该检测线
             if track_id in car_set_dict[line_id]:
@@ -95,16 +97,33 @@ def get_first_lane(lane_set, car_set_dict):
     return False, None
 
 
-if __name__ == '__main__':
+def countFlow(video_path, out_path=None, use_sahi=False, save_video=True, show_video=False, use_uav=False):
     start_time = time.time()
     # -------------------------------------配置信息
-    use_sahi = False  # 是否使用 sahi 算法增强检测结果
-    save_video = True  # 是否存储检测视频
-    show_video = False  # 是否展示检测过程
-    video_path = r'F:\zhangBo\video\JinXinGuoJi.mp4'  # 视频路径
-    excel_save_path = r'F:\zhangBo\video\data\JinXinGuoJi.xlsx'
-    output_path = r'../video/output/output.avi'  # 指定输出视频文件
-    weight_path = r'./weights/best-jiankong-800.pt'  # 权重文件路径
+    # use_sahi = False  # 是否使用 sahi 算法增强检测结果
+    # save_video = True  # 是否存储检测视频
+    # show_video = False  # 是否展示检测过程
+    # video_path =  # 视频路径
+    # use_uav=False  # 是否为无人机航拍视频
+
+    ls = video_path.replace('\\', '/').split('/')
+    bath_path = '/'.join(ls[0: -1])  # 获取视频所在的路径
+    file_name = ls[-1].split('.')[0]  # 文件名
+
+    if out_path is None:
+        out_path = bath_path + rf"\output\{file_name}".replace("\\", '/')
+    if not os.path.exists(rf'{bath_path}/output'):
+        os.mkdir(rf'{bath_path}/output')
+    if not os.path.exists(out_path):
+        os.mkdir(out_path)
+
+    excel_save_path = fr"{out_path}\{file_name}.xlsx"
+    output_video_path = rf'{out_path}/{file_name}.avi'  # 指定输出视频文件
+    # 权重文件路径
+    if use_uav:
+        weight_path = r'./weights/best-UAV-ROD.pt'
+    else:
+        weight_path = r'./weights/best-jiankong-800.pt'
     # -------------------------------------------读入并获取视频信息
     # 打开视频
     capture = cv2.VideoCapture(video_path)
@@ -121,9 +140,8 @@ if __name__ == '__main__':
     print('''鼠标点击检测线起点，拖至检测线重点松开
        画好检测线后，按下e w s n来表示这条检测线是东 西 南 北哪个方向的检测线，小写字母表示入口道，大写字母表示出口道
        当画完所有检测线时按 s 退出''')
+    global img
     ret, img = capture.read(0)
-    ZERO = 1e-9
-    start_x, start_y, end_x, end_y = -1, -1, -1, -1
     cv2.namedWindow('image', cv2.WINDOW_NORMAL)
     # 创建鼠标点击事件：点击和松开时将坐标赋予 start_x, start_y, end_x, end_y
     cv2.setMouseCallback('image', draw_line)
@@ -142,6 +160,10 @@ if __name__ == '__main__':
                 print("北进口道检测线已设置")
             elif k == ord('s'):
                 print("南出口道检测线已设置")
+            cv2.putText(img=img, text=rf"{chr(k)}",
+                        org=(start_x + 2, int(start_y + 2)),
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=1, color=(0, 255, 0), thickness=2)
         if k in [ord(x) for x in ['E', 'W', 'N', 'S']]:
             exit_lane_set[chr(k)] = [start_x, start_y, end_x, end_y]
             if k == ord('E'):
@@ -152,8 +174,14 @@ if __name__ == '__main__':
                 print("北出口道检测线已设置")
             elif k == ord('S'):
                 print("南出口道检测线已设置")
+            cv2.putText(img=img, text=rf"{chr(k)}",
+                        org=(start_x + 2, int(start_y + 2)),
+                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                        fontScale=1, color=(0, 255, 0), thickness=2)
         if k in [ord(x) for x in ['q', 'Q']]:
             break
+    # 保存划线结果
+    cv2.imwrite(rf"{out_path}/detect_line.png", img)
     # 视频要压缩检测线对应缩短
     for lane_set in [enter_lane_set, exit_lane_set]:
         for key in lane_set:
@@ -177,8 +205,7 @@ if __name__ == '__main__':
         for ex in exit_lane_set.keys():
             exit_car_set_dict[ex] = set()
             count_dict[enter + ex] = 0
-    # -----------------------------------------图像处理
-    # 创建检测器
+    # ----------------------------------------- 创建检测器
     if use_sahi:
         detector = AutoDetectionModel.from_pretrained(
             model_type='yolov5',
@@ -189,10 +216,11 @@ if __name__ == '__main__':
         )
     else:
         detector = Detector(weight_path)
+    # ---------------------------- 创建视频输出对象
     # 定义输出视频编解码器
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
     # 创建输出视频对象
-    out = cv2.VideoWriter(output_path, fourcc, fps, (out_width, out_height))
+    out = cv2.VideoWriter(output_video_path, fourcc, fps, (out_width, out_height))
     # 记录当前处理帧数
     frame_count = 0
     # 记录当前处理是第几分钟
@@ -243,11 +271,13 @@ if __name__ == '__main__':
             # 追踪器更新
             bbox_ls = tracker.update(bboxes, im)
             # 流量更新
+            global track_id
             for bbox in bbox_ls:
                 cx1, cy1, cx2, cy2, label, track_id = bbox
                 # 车辆还未驶出检测区域
                 if track_id in remove_car_set:
                     remove_car_set.remove(track_id)
+                global car_box
                 car_box = [cx1, cy1, cx2, cy2]
                 # 车辆第一次越过入口道则将其加入该入口道的哈希表，该入口道流量 + 1
                 # 车辆非第一次越过入口道则判断其是否第一次越过出口道，是则其驶入入口道哈希表中删去此车辆，该流向流量 + 1
@@ -337,4 +367,16 @@ if __name__ == '__main__':
         print(f"检测过程视频保存在{video_path}")
 
     end_time = time.time()
-    print(f"程序运行完毕，共花费{(end_time - start_time) / 60}分钟")
+    print(f"{file_name}检测完毕，共花费{(end_time - start_time) / 60}分钟")
+
+
+# ------------------- 全局变量
+start_x, start_y, end_x, end_y = -1, -1, -1, -1
+img = None
+car_box = []
+track_id = 0
+
+
+if __name__ == '__main__':
+    video_path = r"F:\zhangBo\video\jiankong\高新大道东南角潮漫凯瑞酒店高点_3-13_17-45-00_18-45-00_0.mp4"
+    countFlow(video_path, show_video=True)
