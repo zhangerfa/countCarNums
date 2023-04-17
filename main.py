@@ -344,7 +344,7 @@ def countFlow(video_path, out_path=None, use_sahi=False, save_video=True, show_v
     capture.release()
     out.release()
     cv2.destroyAllWindows()
-    # -------------------------------- 将数据保存到excel中
+    # -------------------------------- 运行数据保存到本地
     import pandas as pd
 
     # 创建ExcelWriter对象
@@ -368,6 +368,11 @@ def countFlow(video_path, out_path=None, use_sahi=False, save_video=True, show_v
 
     end_time = time.time()
     print(f"{file_name}检测完毕，共花费{(end_time - start_time) / 60}分钟")
+
+    # 视频相关数据保存
+    t = open(rf'{out_path}/readme.txt')
+    t.write(f"视频名：{file_name};\n")
+    t.write(rf"视频时长：{minute}分{frame_count / 60}秒;")
 
 
 # ------------------- 全局变量
