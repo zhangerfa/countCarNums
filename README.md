@@ -21,7 +21,7 @@ torchvision = 0.14.0
 cuda = 11.7
 ```
 ### 基础配置
-在main.py中对以下信息进行配置即可运行
+在main.py中对以下信息进行配置后运行
 ```python
 use_sahi = False  # 是否使用 sahi 算法增强检测结果
 save_video = False  # 是否存储检测视频
@@ -31,6 +31,10 @@ excel_save_path = r'..\video\data\JinXinGuoJi.xlsx'
 output_path = r'../video/output/output.avi'  # 指定输出视频文件
 weight_path = r'./weights/best-jiankong-800.pt'  # 权重文件路径
 ```
+当弹出图片时，在图中画出检测线：
+- 鼠标点击检测线一端不放拖至另一端松手即画完一条检测线
+- 检测线画完之后通过按键盘字母为检测线命名
+- 当检测区域为交叉口时，小写字母为入口道、大写字母为出口道
 ### 文件结构
 ```text
 countNumOfCarsTrain  -- 训练数据处理和算法测试的辅助代码
