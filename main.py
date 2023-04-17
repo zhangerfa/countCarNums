@@ -96,13 +96,13 @@ def get_first_lane(lane_set, car_set_dict):
 
 
 if __name__ == '__main__':
-    start = time.time()
+    start_time = time.time()
     # -------------------------------------配置信息
     use_sahi = False  # 是否使用 sahi 算法增强检测结果
     save_video = True  # 是否存储检测视频
-    show_video = True  # 是否展示检测过程
-    video_path = r'F:\zhangBo\video\444.mp4'  # 视频路径
-    excel_save_path = r'F:\zhangBo\video\data\444.xlsx'
+    show_video = False  # 是否展示检测过程
+    video_path = r'F:\zhangBo\video\JinXinGuoJi.mp4'  # 视频路径
+    excel_save_path = r'F:\zhangBo\video\data\JinXinGuoJi.xlsx'
     output_path = r'../video/output/output.avi'  # 指定输出视频文件
     weight_path = r'./weights/best-jiankong-800.pt'  # 权重文件路径
     # -------------------------------------------读入并获取视频信息
@@ -193,8 +193,16 @@ if __name__ == '__main__':
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
     # 创建输出视频对象
     out = cv2.VideoWriter(output_path, fourcc, fps, (out_width, out_height))
-    # 处理图片
+    # 记录当前处理帧数
+    frame_count = 0
+    # 记录当前处理是第几分钟
+    minute = 0
     while True:
+        frame_count += 1
+        if frame_count % (fps * 60) == 0:
+            minute += 1
+            print(f"{minute}min已处理完毕")
+            frame_count = 0
         # 读取每帧图片
         _, im = capture.read()
         if im is None:
@@ -323,3 +331,10 @@ if __name__ == '__main__':
     pd.DataFrame(df_count).to_excel(writer, sheet_name='各流向流量', index=True)
     # 保存Excel文件
     writer.save()
+    print(f"流量文件已保存到{excel_save_path}")
+
+    if save_video:
+        print(f"检测过程视频保存在{video_path}")
+
+    end_time = time.time()
+    print(f"程序运行完毕，共花费{(end_time - start_time) / 60}分钟")

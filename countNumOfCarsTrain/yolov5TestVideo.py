@@ -36,7 +36,7 @@ model = torch.hub.load(source='local', path=path + r"\best.pt", repo_or_dir=path
                        model="custom", force_reload=True)
 
 # 指定输入视频文件
-video_path = r'../../video/test2.mp4'
+video_path = r'../../video/test.mp4'
 
 # 打开视频文件
 cap = cv2.VideoCapture(video_path)
