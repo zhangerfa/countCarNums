@@ -97,56 +97,18 @@ def get_first_lane(lane_set, car_set_dict):
     return False, None
 
 
-def countFlow(video_path, out_path=None, use_sahi=False, save_video=True, show_video=False, use_uav=False):
-    start_time = time.time()
-    # -------------------------------------配置信息
-    # use_sahi = False  # 是否使用 sahi 算法增强检测结果
-    # save_video = True  # 是否存储检测视频
-    # show_video = False  # 是否展示检测过程
-    # video_path =  # 视频路径
-    # use_uav=False  # 是否为无人机航拍视频
-
-    ls = video_path.replace('\\', '/').split('/')
-    bath_path = '/'.join(ls[0: -1])  # 获取视频所在的路径
-    file_name = ls[-1].split('.')[0]  # 文件名
-
-    if out_path is None:
-        out_path = bath_path + rf"\output\{file_name}".replace("\\", '/')
-    if not os.path.exists(rf'{bath_path}/output'):
-        os.mkdir(rf'{bath_path}/output')
-    if not os.path.exists(out_path):
-        os.mkdir(out_path)
-
-    excel_save_path = fr"{out_path}\{file_name}.xlsx"
-    output_video_path = rf'{out_path}/{file_name}.avi'  # 指定输出视频文件
-    # 权重文件路径
-    if use_uav:
-        weight_path = r'./weights/best-UAV-ROD.pt'
-    else:
-        weight_path = r'./weights/best-jiankong-800.pt'
-    # -------------------------------------------读入并获取视频信息
-    # 打开视频
-    capture = cv2.VideoCapture(video_path)
-    # 获取视频FPS和尺寸
-    fps = capture.get(cv2.CAP_PROP_FPS)
-    width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    # 设置展示视频大小
-    out_width = 1680
-    out_height = int(out_width / width * height)
-    # -------------------------------------------画检测线
+# ----------------------------- 画检测线
+def draw_detect_line():
     # 初始化检测线---> 得到检测线坐标集合 enter_lane_set
     print("开始画检测线")
     print('''鼠标点击检测线起点，拖至检测线重点松开
        画好检测线后，按下e w s n来表示这条检测线是东 西 南 北哪个方向的检测线，小写字母表示入口道，大写字母表示出口道
        当画完所有检测线时按 s 退出''')
-    global img
-    ret, img = capture.read(0)
-    cv2.namedWindow('image', cv2.WINDOW_NORMAL)
     # 创建鼠标点击事件：点击和松开时将坐标赋予 start_x, start_y, end_x, end_y
+    cv2.namedWindow('image', cv2.WINDOW_NORMAL)
     cv2.setMouseCallback('image', draw_line)
-    enter_lane_set = {}  # 入口道检测线坐标集合
-    exit_lane_set = {}  # 出口道检测线坐标集合
+    global enter_lane_set  # 入口道检测线坐标集合
+    global exit_lane_set  # 出口道检测线坐标集合
     while 1:
         cv2.imshow('image', img)
         k = cv2.waitKey(1)
@@ -181,8 +143,46 @@ def countFlow(video_path, out_path=None, use_sahi=False, save_video=True, show_v
         if k in [ord(x) for x in ['q', 'Q']]:
             break
     # 保存划线结果
-    cv2.imwrite(rf"{out_path}/detect_line.png", img)
-    # 视频要压缩检测线对应缩短
+    sava_path = rf"{out_path}/{file_name.split('.')[0]}"
+    if not os.path.exists(sava_path):
+        os.mkdir(sava_path)
+    cv2.imwrite(sava_path + r"/detect_line.png", img)
+    video_detect_line_dict[file_name] = [enter_lane_set, exit_lane_set]
+    enter_lane_set = {}
+    exit_lane_set = {}
+
+
+def countFlow(video_path, use_sahi=False, save_video=True, show_video=False, use_uav=False):
+    start_time = time.time()
+    # -------------------------------------配置信息
+    # use_sahi = False  # 是否使用 sahi 算法增强检测结果
+    # save_video = True  # 是否存储检测视频
+    # show_video = False  # 是否展示检测过程
+    # video_path =  # 视频路径
+    # use_uav=False  # 是否为无人机航拍视频
+
+    if not os.path.exists(out_path):
+        os.mkdir(out_path)
+
+    sava_path = rf"{out_path}/{file_name.split('.')[0]}"
+    excel_save_path = fr"{sava_path}\{file_name.split('/')[0]}.xlsx"
+    output_video_path = rf'{sava_path}/{file_name.split("/")[0]}.avi'  # 指定输出视频文件
+    # 权重文件路径
+    if use_uav:
+        weight_path = r'./weights/best-UAV-ROD.pt'
+    else:
+        weight_path = r'./weights/best-jiankong-800.pt'
+    # -------------------------------------------读入并获取视频信息
+    # 打开视频
+    capture = cv2.VideoCapture(video_path)
+    # 获取视频FPS和尺寸
+    fps = capture.get(cv2.CAP_PROP_FPS)
+    width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    # 设置展示视频大小
+    out_width = 1680
+    out_height = int(out_width / width * height)
+    # -----------------------------视频要压缩检测线对应缩短
     for lane_set in [enter_lane_set, exit_lane_set]:
         for key in lane_set:
             lane_set[key][0] = int(lane_set[key][0] * (out_width / width))
@@ -370,18 +370,38 @@ def countFlow(video_path, out_path=None, use_sahi=False, save_video=True, show_v
     print(f"{file_name}检测完毕，共花费{(end_time - start_time) / 60}分钟")
 
     # 视频相关数据保存
-    t = open(rf'{out_path}/readme.txt')
+    t = open(rf'{sava_path}/readme.txt', 'w')
     t.write(f"视频名：{file_name};\n")
     t.write(rf"视频时长：{minute}分{frame_count / 60}秒;")
 
 
 # ------------------- 全局变量
 start_x, start_y, end_x, end_y = -1, -1, -1, -1
-img = None
 car_box = []
 track_id = 0
-
+enter_lane_set = {}
+exit_lane_set = {}
+# 存储各视频的检测线坐标
+video_detect_line_dict = {}
 
 if __name__ == '__main__':
-    video_path = r"F:\zhangBo\video\jiankong\高新大道东南角潮漫凯瑞酒店高点_3-13_17-45-00_18-45-00_0.mp4"
-    countFlow(video_path, show_video=True)
+    # path = r"F:\zhangBo\video\jiankong"
+    path = r'F:\下载\test'
+    out_path = rf'{path}/output'
+    if not os.path.exists(out_path):
+        os.mkdir(out_path)
+    # 为此路径下所有视频画检测线
+    for file_name in os.listdir(path):
+        if file_name.split('.')[-1] == 'mp4':
+            # 读取视频
+            capture = cv2.VideoCapture(rf'{path}/{file_name}')
+            ret, img = capture.read(0)
+            # 画检测线
+            draw_detect_line()
+    # 统计此路径下所有视频中的流量，并将数据保存在此路径的output文件夹中
+    # 打开视频
+    for file_name in os.listdir(path):
+        if file_name.split('.')[-1] == 'mp4':
+            # 检索当前视频的检测线坐标
+            enter_lane_set, exit_lane_set = video_detect_line_dict[file_name]
+            countFlow(rf'{path}/{file_name}')
