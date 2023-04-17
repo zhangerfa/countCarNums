@@ -8,6 +8,7 @@ import cv2
 import os
 
 from sahi import AutoDetectionModel
+import time
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
@@ -95,12 +96,13 @@ def get_first_lane(lane_set, car_set_dict):
 
 
 if __name__ == '__main__':
+    start = time.time()
     # -------------------------------------配置信息
     use_sahi = False  # 是否使用 sahi 算法增强检测结果
-    save_video = False  # 是否存储检测视频
+    save_video = True  # 是否存储检测视频
     show_video = True  # 是否展示检测过程
-    video_path = r'F:\下载\test.mp4'  # 视频路径
-    excel_save_path = r'F:\zhangBo\video\data\JinXinGuoJi.xlsx'
+    video_path = r'F:\zhangBo\video\444.mp4'  # 视频路径
+    excel_save_path = r'F:\zhangBo\video\data\444.xlsx'
     output_path = r'../video/output/output.avi'  # 指定输出视频文件
     weight_path = r'./weights/best-jiankong-800.pt'  # 权重文件路径
     # -------------------------------------------读入并获取视频信息
@@ -190,7 +192,7 @@ if __name__ == '__main__':
     # 定义输出视频编解码器
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
     # 创建输出视频对象
-    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    out = cv2.VideoWriter(output_path, fourcc, fps, (out_width, out_height))
     # 处理图片
     while True:
         # 读取每帧图片
