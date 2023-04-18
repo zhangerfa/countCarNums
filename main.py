@@ -22,6 +22,7 @@ def draw_line(event, x, y, flags, param):
         start_x, start_y = x, y
     elif event == cv2.EVENT_LBUTTONUP:
         end_x, end_y = x, y
+        global img
         cv2.line(img, (start_x, start_y), (end_x, end_y), (0, 0, 255), 5)
 
 
@@ -98,7 +99,11 @@ def get_first_lane(lane_set, car_set_dict):
 
 
 # ----------------------------- 画检测线
-def draw_detect_line():
+def draw_detect_line(video_path):
+    # 读取视频
+    capture = cv2.VideoCapture(video_path)
+    global img
+    ret, img = capture.read(0)
     # 初始化检测线---> 得到检测线坐标集合 enter_lane_set
     print("开始画检测线")
     print('''鼠标点击检测线起点，拖至检测线重点松开
@@ -160,6 +165,14 @@ def countFlow(video_path, use_sahi=False, save_video=True, show_video=False, use
     # show_video = False  # 是否展示检测过程
     # video_path =  # 视频路径
     # use_uav=False  # 是否为无人机航拍视频
+
+    # 检索该视频的检测线位置数据
+    global enter_lane_set
+    global exit_lane_set
+    if file_name not in video_detect_line_dict.keys():
+        print(f"{file_name}未画检测线")
+        return
+    enter_lane_set, exit_lane_set = video_detect_line_dict[file_name]
 
     if not os.path.exists(out_path):
         os.mkdir(out_path)
@@ -381,27 +394,24 @@ car_box = []
 track_id = 0
 enter_lane_set = {}
 exit_lane_set = {}
+img = None
 # 存储各视频的检测线坐标
 video_detect_line_dict = {}
 
 if __name__ == '__main__':
-    # path = r"F:\zhangBo\video\jiankong"
-    path = r'F:\下载\test'
+    # 带处理的视频所在路径
+    path = r"..\video\jiankong"
+    # 运行结果保存路径
     out_path = rf'{path}/output'
     if not os.path.exists(out_path):
         os.mkdir(out_path)
     # 为此路径下所有视频画检测线
     for file_name in os.listdir(path):
         if file_name.split('.')[-1] == 'mp4':
-            # 读取视频
-            capture = cv2.VideoCapture(rf'{path}/{file_name}')
-            ret, img = capture.read(0)
             # 画检测线
-            draw_detect_line()
+            draw_detect_line(rf'{path}/{file_name}')
     # 统计此路径下所有视频中的流量，并将数据保存在此路径的output文件夹中
-    # 打开视频
     for file_name in os.listdir(path):
         if file_name.split('.')[-1] == 'mp4':
             # 检索当前视频的检测线坐标
-            enter_lane_set, exit_lane_set = video_detect_line_dict[file_name]
             countFlow(rf'{path}/{file_name}', show_video=True)
