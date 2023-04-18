@@ -25,17 +25,55 @@ pytorch-cuda = 11.7
 torchvision = 0.14.0
 cuda = 11.7
 ```
-### 基础配置
-在main.py中对以下信息进行配置后运行
+### 主要函数
+本程序包含两个主要函数：`draw_detect_line()`和`countFlow()`，分别用来画检测线和流量统计，均在在main.py中。
+
+其中`draw_detect_line()`需要传入待画检测线视频的路径，检测线画完后以`dict`存储视频名和存储检测线坐标数据；
+
 ```python
-use_sahi = False  # 是否使用 sahi 算法增强检测结果
-save_video = False  # 是否存储检测视频
-show_video = True  # 是否展示检测过程
-video_path = r'..\video\JinXinGuoJi.mp4'  # 视频路径
-excel_save_path = r'..\video\data\JinXinGuoJi.xlsx'
-output_path = r'../video/output/output.avi'  # 指定输出视频文件
-weight_path = r'./weights/best-jiankong-800.pt'  # 权重文件路径
+def draw_detect_line(video_path):
+  pass
+  # video_path =  # 视频路径  
 ```
+
+在运行`countFlow()`时需要传入待统计流量的视频路径（该视频必须已画检测线，否则缺少检测线数据），其他入参看下方介绍，运行结束可以得到检测视频、流量excel表、检测线位置及名称的png图，被检测视频的基本信息的txt文件
+```python
+def countFlow(video_path, use_sahi=False, save_video=True, show_video=False, use_uav=False):
+  pass
+  # video_path =  # 视频路径    
+  # use_sahi = False  # 是否使用 sahi 算法增强检测结果
+  # save_video = True  # 是否存储检测视频
+  # show_video = False  # 是否展示检测过程
+  # use_uav=False  # 是否为无人机航拍视频
+```
+
+使用这两个函数即可完成视频流量统计
+### 批量统计同一路径下的视频中的流量
+先未路径下所有视频画检测线，后统计流量；
+- 以下代码中仅保证检测mp4格式视频，如果视频包含其他格式请自行添加
+```python
+import os
+
+# 带处理的视频所在路径
+path = r"..\video\jiankong"
+# 运行结果保存路径
+out_path = rf'{path}/output'
+if not os.path.exists(out_path):
+    os.mkdir(out_path)
+# 为此路径下所有视频画检测线
+for file_name in os.listdir(path):
+    if file_name.split('.')[-1] == 'mp4':
+        # 画检测线
+        draw_detect_line(rf'{path}/{file_name}')
+# 统计此路径下所有视频中的流量，并将数据保存在此路径的output文件夹中
+# 打开视频
+for file_name in os.listdir(path):
+    if file_name.split('.')[-1] == 'mp4':
+        # 检索当前视频的检测线坐标
+        enter_lane_set, exit_lane_set = video_detect_line_dict[file_name]
+        countFlow(rf'{path}/{file_name}', show_video=True)
+```
+
 程序运行之后为路径下的所有视频画出检测线：
 - 当弹出图片时，在图中画出检测线：
   - 鼠标点击检测线一端不放拖至另一端松手即画完一条检测线
@@ -74,5 +112,6 @@ val.py
 ## 待做功能
 - [x] 绘制检测线
 - [x] 各流向流量统计
+- [x] 统计同一路径下所有视频中的流量数据
 - [ ] 克服无人机镜头偏移造成的检测线偏移
 - [ ] 速度抽样统计
