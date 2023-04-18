@@ -372,7 +372,7 @@ def countFlow(video_path, use_sahi=False, save_video=True, show_video=False, use
     # 视频相关数据保存
     t = open(rf'{sava_path}/readme.txt', 'w')
     t.write(f"视频名：{file_name};\n")
-    t.write(rf"视频时长：{minute}分{frame_count / 60}秒;")
+    t.write(rf"视频时长：{minute}分{frame_count / fps}秒;")
 
 
 # ------------------- 全局变量
@@ -404,4 +404,4 @@ if __name__ == '__main__':
         if file_name.split('.')[-1] == 'mp4':
             # 检索当前视频的检测线坐标
             enter_lane_set, exit_lane_set = video_detect_line_dict[file_name]
-            countFlow(rf'{path}/{file_name}')
+            countFlow(rf'{path}/{file_name}', show_video=True)
