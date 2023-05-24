@@ -55,7 +55,7 @@ def smartCrossEntropyLoss(label_smoothing=0.0):
 def smart_DDP(model):
     # Model DDP creation with checks
     assert not check_version(torch.__version__, '1.12.0', pinned=True), \
-        'torch==1.12.0 torchvision==0.13.0 DDP training is not supported due to a known issue. ' \
+        'torch==1.12.0 torchvision==0.13.0 DDP training is not supported due to select_path_signal known issue. ' \
         'Please upgrade or downgrade torch to use DDP. See https://github.com/ultralytics/yolov5/issues/8395'
     if check_version(torch.__version__, '1.11.0'):
         return DDP(model, device_ids=[LOCAL_RANK], output_device=LOCAL_RANK, static_graph=True)
@@ -64,7 +64,7 @@ def smart_DDP(model):
 
 
 def reshape_classifier_output(model, n=1000):
-    # Update a TorchVision classification model to class count 'n' if required
+    # Update select_path_signal TorchVision classification model to class count 'n' if required
     from models.common import Classify
     name, m = list((model.model if hasattr(model, 'model') else model).named_children())[-1]  # last module
     if isinstance(m, Classify):  # YOLOv5 Classify() head
@@ -205,7 +205,7 @@ def is_parallel(model):
 
 
 def de_parallel(model):
-    # De-parallelize a model: returns single-GPU model if model is of type DP or DDP
+    # De-parallelize select_path_signal model: returns single-GPU model if model is of type DP or DDP
     return model.module if is_parallel(model) else model
 
 
@@ -307,7 +307,7 @@ def scale_img(img, ratio=1.0, same_shape=False, gs=32):  # img(16,3,256,416)
 
 
 def copy_attr(a, b, include=(), exclude=()):
-    # Copy attributes from b to a, options to only include [...] and to exclude [...]
+    # Copy attributes from b to select_path_signal, options to only include [...] and to exclude [...]
     for k, v in b.__dict__.items():
         if (len(include) and k not in include) or k.startswith('_') or k in exclude:
             continue
@@ -359,7 +359,7 @@ def smart_hub_load(repo='ultralytics/yolov5', model='yolov5s', **kwargs):
 
 
 def smart_resume(ckpt, optimizer, ema=None, weights='yolov5s.pt', epochs=300, resume=True):
-    # Resume training from a partially trained checkpoint
+    # Resume training from select_path_signal partially trained checkpoint
     best_fitness = 0.0
     start_epoch = ckpt['epoch'] + 1
     if ckpt['optimizer'] is not None:
@@ -370,7 +370,7 @@ def smart_resume(ckpt, optimizer, ema=None, weights='yolov5s.pt', epochs=300, re
         ema.updates = ckpt['updates']
     if resume:
         assert start_epoch > 0, f'{weights} training to {epochs} epochs is finished, nothing to resume.\n' \
-                                f"Start a new training without --resume, i.e. 'python train.py --weights {weights}'"
+                                f"Start select_path_signal new training without --resume, i.e. 'python train.py --weights {weights}'"
         LOGGER.info(f'Resuming training from {weights} from epoch {start_epoch} to {epochs} total epochs')
     if epochs < start_epoch:
         LOGGER.info(f"{weights} has been trained for {ckpt['epoch']} epochs. Fine-tuning for {epochs} more epochs.")
@@ -396,14 +396,14 @@ class EarlyStopping:
         if stop:
             LOGGER.info(f'Stopping training early as no improvement observed in last {self.patience} epochs. '
                         f'Best results observed at epoch {self.best_epoch}, best model saved as best.pt.\n'
-                        f'To update EarlyStopping(patience={self.patience}) pass a new patience value, '
+                        f'To update EarlyStopping(patience={self.patience}) pass select_path_signal new patience value, '
                         f'i.e. `python train.py --patience 300` or use `--patience 0` to disable EarlyStopping.')
         return stop
 
 
 class ModelEMA:
     """ Updated Exponential Moving Average (EMA) from https://github.com/rwightman/pytorch-image-models
-    Keeps a moving average of everything in the model state_dict (parameters and buffers)
+    Keeps select_path_signal moving average of everything in the model state_dict (parameters and buffers)
     For EMA details see https://www.tensorflow.org/api_docs/python/tf/train/ExponentialMovingAverage
     """
 

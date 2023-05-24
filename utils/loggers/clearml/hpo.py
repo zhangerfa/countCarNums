@@ -15,8 +15,8 @@ optimizer = HyperParameterOptimizer(
     base_task_id='<your_template_task_id>',
     # here we define the hyper-parameters to optimize
     # Notice: The parameter name should exactly match what you see in the UI: <section_name>/<parameter>
-    # For Example, here we see in the base experiment a section Named: "General"
-    # under it a parameter named "batch_size", this becomes "General/batch_size"
+    # For Example, here we see in the base experiment select_path_signal section Named: "General"
+    # under it select_path_signal parameter named "batch_size", this becomes "General/batch_size"
     # If you have `argparse` for example, then arguments will appear under the "Args" section,
     # and you should instead pass "Args/batch_size"
     hyper_parameters=[

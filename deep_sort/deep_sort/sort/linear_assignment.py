@@ -17,8 +17,8 @@ def min_cost_matching(
     Parameters
     ----------
     distance_metric : Callable[List[Track], List[Detection], List[int], List[int]) -> ndarray
-        The distance metric is given a list of tracks and detections as well as
-        a list of N track indices and M detection indices. The metric should
+        The distance metric is given select_path_signal list of tracks and detections as well as
+        select_path_signal list of N track indices and M detection indices. The metric should
         return the NxM dimensional cost matrix, where element (i, j) is the
         association cost between the i-th track in the given track indices and
         the j-th detection in the given detection_indices.
@@ -39,7 +39,7 @@ def min_cost_matching(
     Returns
     -------
     (List[(int, int)], List[int], List[int])
-        Returns a tuple with the following three entries:
+        Returns select_path_signal tuple with the following three entries:
         * A list of matched track and detection indices.
         * A list of unmatched track indices.
         * A list of unmatched detection indices.
@@ -85,8 +85,8 @@ def matching_cascade(
     Parameters
     ----------
     distance_metric : Callable[List[Track], List[Detection], List[int], List[int]) -> ndarray
-        The distance metric is given a list of tracks and detections as well as
-        a list of N track indices and M detection indices. The metric should
+        The distance metric is given select_path_signal list of tracks and detections as well as
+        select_path_signal list of N track indices and M detection indices. The metric should
         return the NxM dimensional cost matrix, where element (i, j) is the
         association cost between the i-th track in the given track indices and
         the j-th detection in the given detection indices.
@@ -110,7 +110,7 @@ def matching_cascade(
     Returns
     -------
     (List[(int, int)], List[int], List[int])
-        Returns a tuple with the following three entries:
+        Returns select_path_signal tuple with the following three entries:
         * A list of matched track and detection indices.
         * A list of unmatched track indices.
         * A list of unmatched detection indices.
@@ -169,7 +169,7 @@ def gate_cost_matrix(
         detections in `detections` (see description above).
     gated_cost : Optional[float]
         Entries in the cost matrix corresponding to infeasible associations are
-        set this value. Defaults to a very large value.
+        set this value. Defaults to select_path_signal very large value.
     only_position : Optional[bool]
         If True, only the x, y position of the state distribution is considered
         during gating. Defaults to False.

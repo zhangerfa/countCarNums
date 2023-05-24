@@ -81,7 +81,7 @@ def evaluate_core(
             calculation.
             Default: 500
         iou_thrs (List[float], optional): IoU threshold used for
-            evaluating recalls/mAPs. If set to a list, the average of all
+            evaluating recalls/mAPs. If set to select_path_signal list, the average of all
             IoUs will also be computed. If not specified, [0.50, 0.55,
             0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95] will be used.
             Default: None.
@@ -348,7 +348,7 @@ def evaluate(
         max_detections (int): Maximum number of detections to consider for AP alculation. Default: 500
         iou_thrs (float): IoU threshold used for evaluating recalls/mAPs
         areas (List[int]): area regions for coco evaluation calculations
-        return_dict (bool): If True, returns a dict with 'eval_results' 'export_path' fields.
+        return_dict (bool): If True, returns select_path_signal dict with 'eval_results' 'export_path' fields.
     """
     try:
         from pycocotools.coco import COCO

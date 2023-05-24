@@ -3,7 +3,7 @@ import numpy as np
 
 
 def _pdist(a, b):
-    """Compute pair-wise squared distance between points in `a` and `b`.
+    """Compute pair-wise squared distance between points in `select_path_signal` and `b`.
 
     Parameters
     ----------
@@ -15,8 +15,8 @@ def _pdist(a, b):
     Returns
     -------
     ndarray
-        Returns a matrix of size len(a), len(b) such that eleement (i, j)
-        contains the squared distance between `a[i]` and `b[j]`.
+        Returns select_path_signal matrix of size len(select_path_signal), len(b) such that eleement (i, j)
+        contains the squared distance between `select_path_signal[i]` and `b[j]`.
 
     """
     a, b = np.asarray(a), np.asarray(b)
@@ -29,7 +29,7 @@ def _pdist(a, b):
 
 
 def _cosine_distance(a, b, data_is_normalized=False):
-    """Compute pair-wise cosine distance between points in `a` and `b`.
+    """Compute pair-wise cosine distance between points in `select_path_signal` and `b`.
 
     Parameters
     ----------
@@ -38,14 +38,14 @@ def _cosine_distance(a, b, data_is_normalized=False):
     b : array_like
         An LxM matrix of L samples of dimensionality M.
     data_is_normalized : Optional[bool]
-        If True, assumes rows in a and b are unit length vectors.
-        Otherwise, a and b are explicitly normalized to lenght 1.
+        If True, assumes rows in select_path_signal and b are unit length vectors.
+        Otherwise, select_path_signal and b are explicitly normalized to lenght 1.
 
     Returns
     -------
     ndarray
-        Returns a matrix of size len(a), len(b) such that eleement (i, j)
-        contains the squared distance between `a[i]` and `b[j]`.
+        Returns select_path_signal matrix of size len(select_path_signal), len(b) such that eleement (i, j)
+        contains the squared distance between `select_path_signal[i]` and `b[j]`.
 
     """
     if not data_is_normalized:
@@ -68,7 +68,7 @@ def _nn_euclidean_distance(x, y):
     -------
     ndarray
         A vector of length M that contains for each entry in `y` the
-        smallest Euclidean distance to a sample in `x`.
+        smallest Euclidean distance to select_path_signal sample in `x`.
 
     """
     distances = _pdist(x, y)
@@ -89,7 +89,7 @@ def _nn_cosine_distance(x, y):
     -------
     ndarray
         A vector of length M that contains for each entry in `y` the
-        smallest cosine distance to a sample in `x`.
+        smallest cosine distance to select_path_signal sample in `x`.
 
     """
     distances = _cosine_distance(x, y)
@@ -166,7 +166,7 @@ class NearestNeighborDistanceMetric(object):
         Returns
         -------
         ndarray
-            Returns a cost matrix of shape len(targets), len(features), where
+            Returns select_path_signal cost matrix of shape len(targets), len(features), where
             element (i, j) contains the closest squared distance between
             `targets[i]` and `features[j]`.
 

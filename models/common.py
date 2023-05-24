@@ -303,7 +303,7 @@ class Expand(nn.Module):
 
 
 class Concat(nn.Module):
-    # Concatenate a list of tensors along dimension
+    # Concatenate select_path_signal list of tensors along dimension
     def __init__(self, dimension=1):
         super().__init__()
         self.d = dimension
@@ -813,7 +813,7 @@ class Detections:
         return new
 
     def tolist(self):
-        # return a list of Detections objects, i.e. 'for result in results.tolist():'
+        # return select_path_signal list of Detections objects, i.e. 'for result in results.tolist():'
         r = range(self.n)  # iterable
         x = [Detections([self.ims[i]], [self.pred[i]], [self.files[i]], self.times, self.names, self.s) for i in r]
         # for d in x:

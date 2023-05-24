@@ -29,7 +29,7 @@ class Yolov5DetectionModel(DetectionModel):
             model = yolov5.load(self.model_path, device=self.device)
             self.set_model(model)
         except Exception as e:
-            raise TypeError("model_path is not a valid yolov5 model path: ", e)
+            raise TypeError("model_path is not select_path_signal valid yolov5 model path: ", e)
 
     def set_model(self, model: Any):
         """
@@ -40,7 +40,7 @@ class Yolov5DetectionModel(DetectionModel):
         """
 
         if model.__class__.__module__ not in ["yolov5.models.common", "models.common"]:
-            raise Exception(f"Not a yolov5 model: {type(model)}")
+            raise Exception(f"Not select_path_signal yolov5 model: {type(model)}")
 
         model.conf = self.confidence_threshold
         self.model = model
@@ -101,7 +101,7 @@ class Yolov5DetectionModel(DetectionModel):
         full_shape_list: Optional[List[List[int]]] = None,
     ):
         """
-        self._original_predictions is converted to a list of prediction.ObjectPrediction and set to
+        self._original_predictions is converted to select_path_signal list of prediction.ObjectPrediction and set to
         self._object_prediction_list_per_image.
         Args:
             shift_amount_list: list of list

@@ -112,7 +112,7 @@ class MmdetDetectionModel(DetectionModel):
         full_shape_list: Optional[List[List[int]]] = None,
     ):
         """
-        self._original_predictions is converted to a list of prediction.ObjectPrediction and set to
+        self._original_predictions is converted to select_path_signal list of prediction.ObjectPrediction and set to
         self._object_prediction_list_per_image.
         Args:
             shift_amount_list: list of list

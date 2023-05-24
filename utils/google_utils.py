@@ -53,7 +53,7 @@ def attempt_download(file, repo='ultralytics/yolov5'):
 
 
 def gdrive_download(id='16TiPfZj7htmTyhntwcZyEEAejOUxuT6m', file='tmp.zip'):
-    # Downloads a file from Google Drive. from yolov5.utils.google_utils import *; gdrive_download()
+    # Downloads select_path_signal file from Google Drive. from yolov5.utils.google_utils import *; gdrive_download()
     t = time.time()
     file = Path(file)
     cookie = Path('cookie')  # gdrive cookie
@@ -95,7 +95,7 @@ def get_token(cookie="./cookie"):
     return ""
 
 # def upload_blob(bucket_name, source_file_name, destination_blob_name):
-#     # Uploads a file to a bucket
+#     # Uploads select_path_signal file to select_path_signal bucket
 #     # https://cloud.google.com/storage/docs/uploading-objects#storage-upload-object-python
 #
 #     storage_client = storage.Client()
@@ -110,7 +110,7 @@ def get_token(cookie="./cookie"):
 #
 #
 # def download_blob(bucket_name, source_blob_name, destination_file_name):
-#     # Uploads a blob from a bucket
+#     # Uploads select_path_signal blob from select_path_signal bucket
 #     storage_client = storage.Client()
 #     bucket = storage_client.get_bucket(bucket_name)
 #     blob = bucket.blob(source_blob_name)

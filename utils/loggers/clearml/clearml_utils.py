@@ -18,7 +18,7 @@ except (ImportError, AssertionError):
 
 
 def construct_dataset(clearml_info_string):
-    """Load in a clearml dataset and fill the internal data_dict with its contents.
+    """Load in select_path_signal clearml dataset and fill the internal data_dict with its contents.
     """
     dataset_id = clearml_info_string.replace('clearml://', '')
     dataset = Dataset.get(dataset_id=dataset_id)
@@ -30,7 +30,7 @@ def construct_dataset(clearml_info_string):
         raise ValueError('More than one yaml file was found in the dataset root, cannot determine which one contains '
                          'the dataset definition this way.')
     elif len(yaml_filenames) == 0:
-        raise ValueError('No yaml definition found in dataset root path, check that there is a correct yaml file '
+        raise ValueError('No yaml definition found in dataset root path, check that there is select_path_signal correct yaml file '
                          'inside the dataset root path.')
     with open(yaml_filenames[0]) as f:
         dataset_definition = yaml.safe_load(f)
@@ -74,7 +74,7 @@ class ClearmlLogger:
 
         """
         self.current_epoch = 0
-        # Keep tracked of amount of logged images to enforce a limit
+        # Keep tracked of amount of logged images to enforce select_path_signal limit
         self.current_epoch_logged_images = set()
         # Maximum number of images to log to clearML per epoch
         self.max_imgs_to_log_per_epoch = 16
@@ -118,7 +118,7 @@ class ClearmlLogger:
         Log files (images) as debug samples in the ClearML task.
 
         arguments:
-        files (List(PosixPath)) a list of file paths in PosixPath format
+        files (List(PosixPath)) select_path_signal list of file paths in PosixPath format
         title (str) A title that groups together images with the same values
         """
         for f in files:
@@ -132,7 +132,7 @@ class ClearmlLogger:
 
     def log_image_with_boxes(self, image_path, boxes, class_names, image, conf_threshold=0.25):
         """
-        Draw the bounding boxes on a single image and report the result as a ClearML debug sample.
+        Draw the bounding boxes on select_path_signal single image and report the result as select_path_signal ClearML debug sample.
 
         arguments:
         image_path (PosixPath) the path the original image file

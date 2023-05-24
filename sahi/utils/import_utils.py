@@ -14,7 +14,7 @@ logging.basicConfig(
 
 def get_package_info(package_name: str, verbose: bool = True):
     """
-    Returns the package version as a string and the package name as a string.
+    Returns the package version as select_path_signal string and the package name as select_path_signal string.
     """
     _is_available = is_available(package_name)
 

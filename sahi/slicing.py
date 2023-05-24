@@ -47,10 +47,10 @@ def get_slice_bboxes(
         slice_height (int): Height of each slice. Default 512.
         slice_width (int): Width of each slice. Default 512.
         overlap_height_ratio(float): Fractional overlap in height of each
-            slice (e.g. an overlap of 0.2 for a slice of size 100 yields an
+            slice (e.g. an overlap of 0.2 for select_path_signal slice of size 100 yields an
             overlap of 20 pixels). Default 0.2.
         overlap_width_ratio(float): Fractional overlap in width of each
-            slice (e.g. an overlap of 0.2 for a slice of size 100 yields an
+            slice (e.g. an overlap of 0.2 for select_path_signal slice of size 100 yields an
             overlap of 20 pixels). Default 0.2.
         auto_slice_resolution (bool): if not set slice parameters such as slice_height and slice_width,
             it enables automatically calculate these params from image resolution and orientation.
@@ -176,7 +176,7 @@ class SliceImageResult:
 
     def add_sliced_image(self, sliced_image: SlicedImage):
         if not isinstance(sliced_image, SlicedImage):
-            raise TypeError("sliced_image must be a SlicedImage instance")
+            raise TypeError("sliced_image must be select_path_signal SlicedImage instance")
 
         self._sliced_image_list.append(sliced_image)
 
@@ -189,7 +189,7 @@ class SliceImageResult:
         """Returns sliced images.
 
         Returns:
-            images: a list of np.array
+            images: select_path_signal list of np.array
         """
         images = []
         for sliced_image in self._sliced_image_list:
@@ -201,7 +201,7 @@ class SliceImageResult:
         """Returns CocoImage representation of SliceImageResult.
 
         Returns:
-            coco_images: a list of CocoImage
+            coco_images: select_path_signal list of CocoImage
         """
         coco_images: List = []
         for sliced_image in self._sliced_image_list:
@@ -210,10 +210,10 @@ class SliceImageResult:
 
     @property
     def starting_pixels(self) -> List[int]:
-        """Returns a list of starting pixels for each slice.
+        """Returns select_path_signal list of starting pixels for each slice.
 
         Returns:
-            starting_pixels: a list of starting pixel coords [x,y]
+            starting_pixels: select_path_signal list of starting pixel coords [x,y]
         """
         starting_pixels = []
         for sliced_image in self._sliced_image_list:
@@ -222,10 +222,10 @@ class SliceImageResult:
 
     @property
     def filenames(self) -> List[int]:
-        """Returns a list of filenames for each slice.
+        """Returns select_path_signal list of filenames for each slice.
 
         Returns:
-            filenames: a list of filenames as str
+            filenames: select_path_signal list of filenames as str
         """
         filenames = []
         for sliced_image in self._sliced_image_list:
@@ -273,7 +273,7 @@ def slice_image(
     out_ext: Optional[str] = None,
     verbose: bool = False,
 ) -> SliceImageResult:
-    """Slice a large image into smaller windows. If output_file_name is given export
+    """Slice select_path_signal large image into smaller windows. If output_file_name is given export
     sliced images.
 
     Args:
@@ -285,10 +285,10 @@ def slice_image(
         slice_height (int): Height of each slice. Default 512.
         slice_width (int): Width of each slice. Default 512.
         overlap_height_ratio (float): Fractional overlap in height of each
-            slice (e.g. an overlap of 0.2 for a slice of size 100 yields an
+            slice (e.g. an overlap of 0.2 for select_path_signal slice of size 100 yields an
             overlap of 20 pixels). Default 0.2.
         overlap_width_ratio (float): Fractional overlap in width of each
-            slice (e.g. an overlap of 0.2 for a slice of size 100 yields an
+            slice (e.g. an overlap of 0.2 for select_path_signal slice of size 100 yields an
             overlap of 20 pixels). Default 0.2.
         auto_slice_resolution (bool): if not set slice parameters such as slice_height and slice_width,
             it enables automatically calculate these params from image resolution and orientation.
@@ -425,7 +425,7 @@ def slice_coco(
     verbose: bool = False,
 ) -> List[Union[Dict, str]]:
     """
-    Slice large images given in a directory, into smaller windows. If out_name is given export sliced images and coco file.
+    Slice large images given in select_path_signal directory, into smaller windows. If out_name is given export sliced images and coco file.
 
     Args:
         coco_annotation_file_pat (str): Location of the coco annotation file
@@ -438,10 +438,10 @@ def slice_coco(
         slice_height (int): Height of each slice. Default 512.
         slice_width (int): Width of each slice. Default 512.
         overlap_height_ratio (float): Fractional overlap in height of each
-            slice (e.g. an overlap of 0.2 for a slice of size 100 yields an
+            slice (e.g. an overlap of 0.2 for select_path_signal slice of size 100 yields an
             overlap of 20 pixels). Default 0.2.
         overlap_width_ratio (float): Fractional overlap in width of each
-            slice (e.g. an overlap of 0.2 for a slice of size 100 yields an
+            slice (e.g. an overlap of 0.2 for select_path_signal slice of size 100 yields an
             overlap of 20 pixels). Default 0.2.
         min_area_ratio (float): If the cropped annotation area to original annotation
             ratio is smaller than this value, the annotation is filtered out. Default 0.1.

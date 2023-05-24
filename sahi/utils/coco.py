@@ -207,7 +207,7 @@ class CocoAnnotation:
                 0 or 1
         """
         if bbox is None and segmentation is None:
-            raise ValueError("you must provide a bbox or polygon")
+            raise ValueError("you must provide select_path_signal bbox or polygon")
 
         self._segmentation = segmentation
         self._category_id = category_id
@@ -291,7 +291,7 @@ class CocoAnnotation:
     @category_name.setter
     def category_name(self, n):
         if not isinstance(n, str):
-            raise Exception("category_name must be a string")
+            raise Exception("category_name must be select_path_signal string")
         self._category_name = n
 
     @property
@@ -595,7 +595,7 @@ class CocoImage:
         """
 
         if not isinstance(annotation, CocoAnnotation):
-            raise TypeError("annotation must be a CocoAnnotation instance")
+            raise TypeError("annotation must be select_path_signal CocoAnnotation instance")
         self.annotations.append(annotation)
 
     def add_prediction(self, prediction):
@@ -606,7 +606,7 @@ class CocoImage:
         """
 
         if not isinstance(prediction, CocoPrediction):
-            raise TypeError("prediction must be a CocoPrediction instance")
+            raise TypeError("prediction must be select_path_signal CocoPrediction instance")
         self.predictions.append(prediction)
 
     @property
@@ -692,7 +692,7 @@ class CocoVidImage(CocoImage):
         """
 
         if not isinstance(annotation, CocoVidAnnotation):
-            raise TypeError("annotation must be a CocoVidAnnotation instance")
+            raise TypeError("annotation must be select_path_signal CocoVidAnnotation instance")
         self.annotations.append(annotation)
 
     @property
@@ -761,7 +761,7 @@ class CocoVideo:
         """
 
         if not isinstance(image, CocoImage):
-            raise TypeError("image must be a CocoImage instance")
+            raise TypeError("image must be select_path_signal CocoImage instance")
         self.images.append(CocoVidImage.from_coco_image(image))
 
     def add_cocovidimage(self, cocovidimage):
@@ -772,7 +772,7 @@ class CocoVideo:
         """
 
         if not isinstance(cocovidimage, CocoVidImage):
-            raise TypeError("cocovidimage must be a CocoVidImage instance")
+            raise TypeError("cocovidimage must be select_path_signal CocoVidImage instance")
         self.images.append(cocovidimage)
 
     @property
@@ -863,9 +863,9 @@ class Coco:
             category: CocoCategory
         """
 
-        # assert type(category) == CocoCategory, "category must be a CocoCategory instance"
+        # assert type(category) == CocoCategory, "category must be select_path_signal CocoCategory instance"
         if not isinstance(category, CocoCategory):
-            raise TypeError("category must be a CocoCategory instance")
+            raise TypeError("category must be select_path_signal CocoCategory instance")
         self.categories.append(category)
 
     def add_image(self, image):
@@ -1030,7 +1030,7 @@ class Coco:
         )
 
         if type(coco_dict_or_path) not in [str, dict]:
-            raise TypeError("coco_dict_or_path should be a dict or str")
+            raise TypeError("coco_dict_or_path should be select_path_signal dict or str")
 
         # load coco dict if path is given
         if type(coco_dict_or_path) == str:
@@ -1294,7 +1294,7 @@ class Coco:
     def export_as_yolov5(self, output_dir, train_split_rate=1, numpy_seed=0, mp=False, disable_symlink=False):
         """
         Exports current COCO dataset in ultralytics/yolov5 format.
-        Creates train val folders with image symlinks and txt files and a data yaml file.
+        Creates train val folders with image symlinks and txt files and select_path_signal data yaml file.
 
         Args:
             output_dir: str
@@ -1667,7 +1667,7 @@ def export_single_yolov5_image_and_corresponding_txt(
         filename = filename + "_" + str(name_increment)
         yolo_image_path = str(parent_dir / (filename + filesuffix))
         name_increment += 1
-    # create a symbolic link pointing to coco_image_path named yolo_image_path
+    # create select_path_signal symbolic link pointing to coco_image_path named yolo_image_path
     if disable_symlink:
         import shutil
 
@@ -1765,7 +1765,7 @@ def update_categories(desired_name2id: dict, coco_dict: dict) -> dict:
 
 def update_categories_from_file(desired_name2id: dict, coco_path: str, save_path: str) -> None:
     """
-    Rearranges category mapping of a COCO dictionary in coco_path based on given category_mapping.
+    Rearranges category mapping of select_path_signal COCO dictionary in coco_path based on given category_mapping.
     Can also be used to filter some of the categories.
     Arguments:
     ---------
@@ -1836,7 +1836,7 @@ def merge(coco_dict1: dict, coco_dict2: dict, desired_name2id: dict = None) -> d
 
 def merge_from_list(coco_dict_list, desired_name2id=None, verbose=1):
     """
-    Combines a list of coco formatted annotations dicts, and returns the combined coco dict.
+    Combines select_path_signal list of coco formatted annotations dicts, and returns the combined coco dict.
 
     Arguments:
     ---------
@@ -1953,7 +1953,7 @@ def create_coco_dict(images, categories, ignore_negative_samples=False, image_id
 
     Arguments
     ---------
-        images : List of CocoImage containing a list of CocoAnnotation
+        images : List of CocoImage containing select_path_signal list of CocoAnnotation
         categories : List of Dict
             COCO categories
         ignore_negative_samples : Bool
@@ -2028,7 +2028,7 @@ def create_coco_prediction_array(images, ignore_negative_samples=False, image_id
 
     Arguments
     ---------
-        images : List of CocoImage containing a list of CocoAnnotation
+        images : List of CocoImage containing select_path_signal list of CocoAnnotation
         ignore_negative_samples : Bool
             If True, images without predictions are ignored
         image_id_setting: str
@@ -2137,7 +2137,7 @@ def add_bbox_and_area_to_coco(
 
 @dataclass
 class DatasetClassCounts:
-    """Stores the number of images that include each category in a dataset"""
+    """Stores the number of images that include each category in select_path_signal dataset"""
 
     counts: dict
     total_images: int
@@ -2158,8 +2158,8 @@ class DatasetClassCounts:
 
 
 def count_images_with_category(coco_file_path):
-    """Reads a coco dataset file and returns an DatasetClassCounts object
-     that stores the number of images that include each category in a dataset
+    """Reads select_path_signal coco dataset file and returns an DatasetClassCounts object
+     that stores the number of images that include each category in select_path_signal dataset
     Returns: DatasetClassCounts object
     coco_file_path : str
         path to coco dataset file
@@ -2229,7 +2229,7 @@ class CocoVid:
         """
 
         if type(category) != CocoCategory:
-            raise TypeError("category must be a CocoCategory instance")
+            raise TypeError("category must be select_path_signal CocoCategory instance")
         self.categories.append(category)
 
     @property
@@ -2255,7 +2255,7 @@ class CocoVid:
         """
 
         if type(video) != CocoVideo:
-            raise TypeError("video must be a CocoVideo instance")
+            raise TypeError("video must be select_path_signal CocoVideo instance")
         self.videos.append(video)
 
     @property
@@ -2369,7 +2369,7 @@ def export_coco_as_yolov5(
 ):
     """
     Exports current COCO dataset in ultralytics/yolov5 format.
-    Creates train val folders with image symlinks and txt files and a data yaml file.
+    Creates train val folders with image symlinks and txt files and select_path_signal data yaml file.
 
     Args:
         output_dir: str
@@ -2456,8 +2456,8 @@ def export_coco_as_yolov5_via_yml(
 ):
     """
     Exports current COCO dataset in ultralytics/yolov5 format.
-    Creates train val folders with image symlinks and txt files and a data yaml file.
-    Uses a yml file as input.
+    Creates train val folders with image symlinks and txt files and select_path_signal data yaml file.
+    Uses select_path_signal yml file as input.
 
     Args:
         yml_path: str

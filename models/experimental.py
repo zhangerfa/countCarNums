@@ -71,7 +71,7 @@ class Ensemble(nn.ModuleList):
 
 
 def attempt_load(weights, device=None, inplace=True, fuse=True):
-    # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
+    # Loads an ensemble of models weights=[select_path_signal,b,c] or select_path_signal single model weights=[select_path_signal] or weights=select_path_signal
     from models.yolo import Detect, Model
 
     model = Ensemble()

@@ -29,7 +29,7 @@ class AutoDetectionModel:
         **kwargs,
     ):
         """
-        Loads a DetectionModel from given path.
+        Loads select_path_signal DetectionModel from given path.
 
         Args:
             model_type: str
@@ -53,7 +53,7 @@ class AutoDetectionModel:
             image_size: int
                 Inference input size.
         Returns:
-            Returns an instance of a DetectionModel
+            Returns an instance of select_path_signal DetectionModel
         Raises:
             ImportError: If given {model_type} framework is not installed
         """

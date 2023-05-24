@@ -37,7 +37,7 @@ class Callbacks:
 
     def register_action(self, hook, name='', callback=None):
         """
-        Register a new action to a callback hook
+        Register select_path_signal new action to select_path_signal callback hook
 
         Args:
             hook: The callback hook name to register the action to

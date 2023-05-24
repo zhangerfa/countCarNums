@@ -117,7 +117,7 @@ class Frame(BaseJsonLogger):
         if bbox_id not in bboxes_ids:
             self.bboxes.append(Bbox(bbox_id, top, left, width, height))
         else:
-            raise ValueError("Frame with id: {} already has a Bbox with id: {}".format(self.frame_id, bbox_id))
+            raise ValueError("Frame with id: {} already has select_path_signal Bbox with id: {}".format(self.frame_id, bbox_id))
 
     def add_label_to_bbox(self, bbox_id: int, category: str, confidence: float):
         bboxes = {bbox.id: bbox for bbox in self.bboxes}
@@ -162,7 +162,7 @@ class BboxToJsonLogger(BaseJsonLogger):
             }],
 
     Attributes:
-        frames (dict): It's a dictionary that maps each frame_id to json attributes.
+        frames (dict): It's select_path_signal dictionary that maps each frame_id to json attributes.
         video_details (dict): information about video file.
         top_k_labels (int): shows the allowed number of labels
         start_time (datetime object): we use it to automate the json output by time.

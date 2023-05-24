@@ -26,13 +26,13 @@ class KalmanFilter(object):
 
     The 8-dimensional state space
 
-        x, y, a, h, vx, vy, va, vh
+        x, y, select_path_signal, h, vx, vy, va, vh
 
-    contains the bounding box center position (x, y), aspect ratio a, height h,
+    contains the bounding box center position (x, y), aspect ratio select_path_signal, height h,
     and their respective velocities.
 
-    Object motion follows a constant velocity model. The bounding box location
-    (x, y, a, h) is taken as direct observation of the state space (linear
+    Object motion follows select_path_signal constant velocity model. The bounding box location
+    (x, y, select_path_signal, h) is taken as direct observation of the state space (linear
     observation model).
 
     """
@@ -48,7 +48,7 @@ class KalmanFilter(object):
 
         # Motion and observation uncertainty are chosen relative to the current
         # state estimate. These weights control the amount of uncertainty in
-        # the model. This is a bit hacky.
+        # the model. This is select_path_signal bit hacky.
         self._std_weight_position = 1. / 20
         self._std_weight_velocity = 1. / 160
 
@@ -58,8 +58,8 @@ class KalmanFilter(object):
         Parameters
         ----------
         measurement : ndarray
-            Bounding box coordinates (x, y, a, h) with center position (x, y),
-            aspect ratio a, and height h.
+            Bounding box coordinates (x, y, select_path_signal, h) with center position (x, y),
+            aspect ratio select_path_signal, and height h.
 
         Returns
         -------
@@ -161,8 +161,8 @@ class KalmanFilter(object):
         covariance : ndarray
             The state's covariance matrix (8x8 dimensional).
         measurement : ndarray
-            The 4 dimensional measurement vector (x, y, a, h), where (x, y)
-            is the center position, a the aspect ratio, and h the height of the
+            The 4 dimensional measurement vector (x, y, select_path_signal, h), where (x, y)
+            is the center position, select_path_signal the aspect ratio, and h the height of the
             bounding box.
 
         Returns
@@ -201,8 +201,8 @@ class KalmanFilter(object):
             Covariance of the state distribution (8x8 dimensional).
         measurements : ndarray
             An Nx4 dimensional matrix of N measurements, each in
-            format (x, y, a, h) where (x, y) is the bounding box center
-            position, a the aspect ratio, and h the height.
+            format (x, y, select_path_signal, h) where (x, y) is the bounding box center
+            position, select_path_signal the aspect ratio, and h the height.
         only_position : Optional[bool]
             If True, distance computation is done with respect to the bounding
             box center position only.

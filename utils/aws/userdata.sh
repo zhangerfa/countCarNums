@@ -1,6 +1,6 @@
 #!/bin/bash
 # AWS EC2 instance startup script https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
-# This script will run only once on first instance start (for a re-start script see mime.sh)
+# This script will run only once on first instance start (for select_path_signal re-start script see mime.sh)
 # /home/ubuntu (ubuntu) or /home/ec2-user (amazon-linux) is working dir
 # Use >300 GB SSD
 

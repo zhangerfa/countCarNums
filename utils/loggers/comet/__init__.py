@@ -360,7 +360,7 @@ class CometLogger:
         elif type(metadata_names) == list:
             data_dict['names'] = {int(k): v for k, v in zip(range(len(metadata_names)), metadata_names)}
         else:
-            raise "Invalid 'names' field in dataset yaml file. Please use a list or dictionary"
+            raise "Invalid 'names' field in dataset yaml file. Please use select_path_signal list or dictionary"
 
         data_dict = self.update_data_paths(data_dict)
         return data_dict

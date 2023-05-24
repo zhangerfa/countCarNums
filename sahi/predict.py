@@ -81,8 +81,8 @@ def get_prediction(
 
     Returns:
         A dict with fields:
-            object_prediction_list: a list of ObjectPrediction
-            durations_in_seconds: a dict containing elapsed times for profiling
+            object_prediction_list: select_path_signal list of ObjectPrediction
+            durations_in_seconds: select_path_signal dict containing elapsed times for profiling
     """
     durations_in_seconds = dict()
 
@@ -149,15 +149,15 @@ def get_sliced_prediction(
         slice_width: int
             Width of each slice.  Defaults to ``None``.
         overlap_height_ratio: float
-            Fractional overlap in height of each window (e.g. an overlap of 0.2 for a window
+            Fractional overlap in height of each window (e.g. an overlap of 0.2 for select_path_signal window
             of size 512 yields an overlap of 102 pixels).
             Default to ``0.2``.
         overlap_width_ratio: float
-            Fractional overlap in width of each window (e.g. an overlap of 0.2 for a window
+            Fractional overlap in width of each window (e.g. an overlap of 0.2 for select_path_signal window
             of size 512 yields an overlap of 102 pixels).
             Default to ``0.2``.
         perform_standard_pred: bool
-            Perform a standard prediction on top of sliced predictions to increase large object
+            Perform select_path_signal standard prediction on top of sliced predictions to increase large object
             detection accuracy. Default: True.
         postprocess_type: str
             Type of the postprocess to be used after sliced inference while merging/eliminating predictions.
@@ -184,8 +184,8 @@ def get_sliced_prediction(
 
     Returns:
         A Dict with fields:
-            object_prediction_list: a list of sahi.prediction.ObjectPrediction
-            durations_in_seconds: a dict containing elapsed times for profiling
+            object_prediction_list: select_path_signal list of sahi.prediction.ObjectPrediction
+            durations_in_seconds: select_path_signal dict containing elapsed times for profiling
     """
 
     # for profiling
@@ -292,7 +292,7 @@ def get_sliced_prediction(
 
 def bbox_sort(a, b, thresh):
     """
-    a, b  - function receives two bounding bboxes
+    select_path_signal, b  - function receives two bounding bboxes
 
     thresh - the threshold takes into account how far two bounding bboxes differ in
     Y where thresh is the threshold we set for the
@@ -401,11 +401,11 @@ def predict(
         slice_width: int
             Width of each slice.  Defaults to ``512``.
         overlap_height_ratio: float
-            Fractional overlap in height of each window (e.g. an overlap of 0.2 for a window
+            Fractional overlap in height of each window (e.g. an overlap of 0.2 for select_path_signal window
             of size 512 yields an overlap of 102 pixels).
             Default to ``0.2``.
         overlap_width_ratio: float
-            Fractional overlap in width of each window (e.g. an overlap of 0.2 for a window
+            Fractional overlap in width of each window (e.g. an overlap of 0.2 for select_path_signal window
             of size 512 yields an overlap of 102 pixels).
             Default to ``0.2``.
         postprocess_type: str
@@ -447,7 +447,7 @@ def predict(
             1: print slice/prediction durations, number of slices
             2: print model loading/file exporting durations
         return_dict: bool
-            If True, returns a dict with 'export_dir' field.
+            If True, returns select_path_signal dict with 'export_dir' field.
         force_postprocess_type: bool
             If True, auto postprocess check will e disabled
     """
@@ -765,11 +765,11 @@ def predict_fiftyone(
         slice_width: int
             Width of each slice.  Defaults to ``256``.
         overlap_height_ratio: float
-            Fractional overlap in height of each window (e.g. an overlap of 0.2 for a window
+            Fractional overlap in height of each window (e.g. an overlap of 0.2 for select_path_signal window
             of size 256 yields an overlap of 51 pixels).
             Default to ``0.2``.
         overlap_width_ratio: float
-            Fractional overlap in width of each window (e.g. an overlap of 0.2 for a window
+            Fractional overlap in width of each window (e.g. an overlap of 0.2 for select_path_signal window
             of size 256 yields an overlap of 51 pixels).
             Default to ``0.2``.
         postprocess_type: str
@@ -891,7 +891,7 @@ def predict_fiftyone(
     # Get the 10 most common classes in the dataset
     counts = dataset.count_values("ground_truth.detections.label")
     classes_top10 = sorted(counts, key=counts.get, reverse=True)[:10]
-    # Print a classification report for the top-10 classes
+    # Print select_path_signal classification report for the top-10 classes
     results.print_report(classes=classes_top10)
     # Load the view on which we ran the `eval` evaluation
     eval_view = dataset.load_evaluation_view("eval")

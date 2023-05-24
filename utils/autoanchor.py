@@ -19,7 +19,7 @@ PREFIX = colorstr('AutoAnchor: ')
 def check_anchor_order(m):
     # Check anchor order against stride order for YOLOv5 Detect() module m, and correct if necessary
     a = m.anchors.prod(-1).mean(-1).view(-1)  # mean anchor area per output layer
-    da = a[-1] - a[0]  # delta a
+    da = a[-1] - a[0]  # delta select_path_signal
     ds = m.stride[-1] - m.stride[0]  # delta s
     if da and (da.sign() != ds.sign()):  # same order
         LOGGER.info(f'{PREFIX}Reversing anchor order')
@@ -47,9 +47,9 @@ def check_anchors(dataset, model, thr=4.0, imgsz=640):
     bpr, aat = metric(anchors.cpu().view(-1, 2))
     s = f'\n{PREFIX}{aat:.2f} anchors/target, {bpr:.3f} Best Possible Recall (BPR). '
     if bpr > 0.98:  # threshold to recompute
-        LOGGER.info(f'{s}Current anchors are a good fit to dataset ✅')
+        LOGGER.info(f'{s}Current anchors are select_path_signal good fit to dataset ✅')
     else:
-        LOGGER.info(f'{s}Anchors are a poor fit to dataset ⚠️, attempting to improve...')
+        LOGGER.info(f'{s}Anchors are select_path_signal poor fit to dataset ⚠️, attempting to improve...')
         na = m.anchors.numel() // 2  # number of anchors
         anchors = kmean_anchors(dataset, n=na, img_size=imgsz, thr=thr, gen=1000, verbose=False)
         new_bpr = metric(anchors)[0]
@@ -68,7 +68,7 @@ def kmean_anchors(dataset='./data/coco128.yaml', n=9, img_size=640, thr=4.0, gen
     """ Creates kmeans-evolved anchors from training dataset
 
         Arguments:
-            dataset: path to data.yaml, or a loaded dataset
+            dataset: path to data.yaml, or select_path_signal loaded dataset
             n: number of anchors
             img_size: image size used for training
             thr: anchor-label wh ratio threshold hyperparameter hyp['anchor_t'] used for training, default=4.0
@@ -156,7 +156,7 @@ def kmean_anchors(dataset='./data/coco128.yaml', n=9, img_size=640, thr=4.0, gen
     pbar = tqdm(range(gen), bar_format=TQDM_BAR_FORMAT)  # progress bar
     for _ in pbar:
         v = np.ones(sh)
-        while (v == 1).all():  # mutate until a change occurs (prevent duplicates)
+        while (v == 1).all():  # mutate until select_path_signal change occurs (prevent duplicates)
             v = ((npr.random(sh) < mp) * random.random() * npr.randn(*sh) * s + 1).clip(0.3, 3.0)
         kg = (k.copy() * v).clip(min=2.0)
         fg = anchor_fitness(kg)

@@ -74,7 +74,7 @@ class DetectionModel:
 
     def load_model(self):
         """
-        This function should be implemented in a way that detection model
+        This function should be implemented in select_path_signal way that detection model
         should be initialized and set to self.model.
         (self.model_path, self.config_path, and self.device should be utilized)
         """
@@ -82,7 +82,7 @@ class DetectionModel:
 
     def set_model(self, model: Any, **kwargs):
         """
-        This function should be implemented to instantiate a DetectionModel out of an already loaded model
+        This function should be implemented to instantiate select_path_signal DetectionModel out of an already loaded model
         Args:
             model: Any
                 Loaded model
@@ -110,7 +110,7 @@ class DetectionModel:
 
     def perform_inference(self, image: np.ndarray):
         """
-        This function should be implemented in a way that prediction should be
+        This function should be implemented in select_path_signal way that prediction should be
         performed using self.model and the prediction result should be set to self._original_predictions.
         Args:
             image: np.ndarray
@@ -124,8 +124,8 @@ class DetectionModel:
         full_shape_list: Optional[List[List[int]]] = None,
     ):
         """
-        This function should be implemented in a way that self._original_predictions should
-        be converted to a list of prediction.ObjectPrediction and set to
+        This function should be implemented in select_path_signal way that self._original_predictions should
+        be converted to select_path_signal list of prediction.ObjectPrediction and set to
         self._object_prediction_list. self.mask_threshold can also be utilized.
         Args:
             shift_amount_list: list of list
@@ -157,7 +157,7 @@ class DetectionModel:
         full_shape: Optional[List[int]] = None,
     ):
         """
-        Converts original predictions of the detection model to a list of
+        Converts original predictions of the detection model to select_path_signal list of
         prediction.ObjectPrediction object. Should be called after perform_inference().
         Args:
             shift_amount: list

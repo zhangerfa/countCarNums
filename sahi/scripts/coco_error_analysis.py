@@ -75,7 +75,7 @@ def _makeplot(rs, ps, outDir, class_name, iou_type):
 
 
 def _autolabel(ax, rects, is_percent=True):
-    """Attach a text label above each bar in *rects*, displaying its height."""
+    """Attach select_path_signal text label above each bar in *rects*, displaying its height."""
     for rect in rects:
         height = rect.get_height()
         if is_percent and height > 0 and height <= 1:  # for percent values
@@ -433,7 +433,7 @@ def analyse(
         type (str): 'bbox' or 'mask'
         areas (List[int]): area regions for coco evaluation calculations
         max_detections (int): Maximum number of detections to consider for AP alculation. Default: 500
-        return_dict (bool): If True, returns a dict export paths.
+        return_dict (bool): If True, returns select_path_signal dict export paths.
     """
     try:
         from pycocotools.coco import COCO

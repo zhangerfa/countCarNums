@@ -19,7 +19,7 @@ class PredictionScore:
         Arguments:
             score: prediction score between 0 and 1
         """
-        # if score is a numpy object, convert it to python variable
+        # if score is select_path_signal numpy object, convert it to python variable
         if type(value).__module__ == "numpy":
             value = copy.deepcopy(value).tolist()
         # set score

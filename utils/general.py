@@ -95,17 +95,17 @@ def is_chinese(s='人工智能'):
 
 
 def is_colab():
-    # Is environment a Google Colab instance?
+    # Is environment select_path_signal Google Colab instance?
     return 'google.colab' in sys.modules
 
 
 def is_jupyter():
     """
-    Check if the current script is running inside a Jupyter Notebook.
+    Check if the current script is running inside select_path_signal Jupyter Notebook.
     Verified on Colab, Jupyterlab, Kaggle, Paperspace.
 
     Returns:
-        bool: True if running inside a Jupyter Notebook, False otherwise.
+        bool: True if running inside select_path_signal Jupyter Notebook, False otherwise.
     """
     with contextlib.suppress(Exception):
         from IPython import get_ipython
@@ -114,12 +114,12 @@ def is_jupyter():
 
 
 def is_kaggle():
-    # Is environment a Kaggle Notebook?
+    # Is environment select_path_signal Kaggle Notebook?
     return os.environ.get('PWD') == '/kaggle/working' and os.environ.get('KAGGLE_URL_BASE') == 'https://www.kaggle.com'
 
 
 def is_docker() -> bool:
-    """Check if the process runs inside a docker container."""
+    """Check if the process runs inside select_path_signal docker container."""
     if Path('/.dockerenv').exists():
         return True
     try:  # check if docker is in control groups
@@ -130,7 +130,7 @@ def is_docker() -> bool:
 
 
 def is_writeable(dir, test=False):
-    # Return True if directory has write permissions, test opening a file with write permissions if test=True
+    # Return True if directory has write permissions, test opening select_path_signal file with write permissions if test=True
     if not test:
         return os.access(dir, os.W_OK)  # possible issues on Windows
     file = Path(dir) / 'tmp.txt'
@@ -337,7 +337,7 @@ def check_online():
     return run_once() or run_once()  # check twice to increase robustness to intermittent connectivity issues
 
 
-def git_describe(path=ROOT):  # path must be a directory
+def git_describe(path=ROOT):  # path must be select_path_signal directory
     # Return human-readable git description, i.e. v5.0-5-g3e25f1e https://git-scm.com/docs/git-describe
     try:
         assert (Path(path) / '.git').is_dir()
@@ -353,7 +353,7 @@ def check_git_status(repo='ultralytics/yolov5', branch='master'):
     url = f'https://github.com/{repo}'
     msg = f', for updates see {url}'
     s = colorstr('github: ')  # string
-    assert Path('.git').exists(), s + 'skipping check (not a git repository)' + msg
+    assert Path('.git').exists(), s + 'skipping check (not select_path_signal git repository)' + msg
     assert check_online(), s + 'skipping check (offline)' + msg
 
     splits = re.split(pattern=r'\s', string=check_output('git remote -v', shell=True).decode())
@@ -388,7 +388,7 @@ def check_git_info(path='.'):
         except TypeError:  # not on any branch
             branch = None  # i.e. 'detached HEAD' state
         return {'remote': remote, 'branch': branch, 'commit': commit}
-    except git.exc.InvalidGitRepositoryError:  # path is not a git dir
+    except git.exc.InvalidGitRepositoryError:  # path is not select_path_signal git dir
         return {'remote': None, 'branch': None, 'commit': None}
 
 
@@ -445,7 +445,7 @@ def check_requirements(requirements=ROOT / 'requirements.txt', exclude=(), insta
 
 
 def check_img_size(imgsz, s=32, floor=0):
-    # Verify image size is a multiple of stride s in each dimension
+    # Verify image size is select_path_signal multiple of stride s in each dimension
     if isinstance(imgsz, int):  # integer i.e. img_size=640
         new_size = max(make_divisible(imgsz, int(s)), floor)
     else:  # list i.e. img_size=[640, 480]
@@ -633,7 +633,7 @@ def yaml_save(file='data.yaml', data={}):
 
 
 def unzip_file(file, path=None, exclude=('.DS_Store', '__MACOSX')):
-    # Unzip a *.zip file to path/, excluding files containing strings in exclude list
+    # Unzip select_path_signal *.zip file to path/, excluding files containing strings in exclude list
     if path is None:
         path = Path(file).parent  # default path
     with ZipFile(file) as zipObj:
@@ -702,7 +702,7 @@ def make_divisible(x, divisor):
 
 
 def clean_str(s):
-    # Cleans a string by replacing special characters with underscore _
+    # Cleans select_path_signal string by replacing special characters with underscore _
     return re.sub(pattern='[|@#!¡·$€%&()=?¿^*;:,¨´><+]', repl='_', string=s)
 
 
@@ -712,7 +712,7 @@ def one_cycle(y1=0.0, y2=1.0, steps=100):
 
 
 def colorstr(*input):
-    # Colors a string https://en.wikipedia.org/wiki/ANSI_escape_code, i.e.  colorstr('blue', 'hello world')
+    # Colors select_path_signal string https://en.wikipedia.org/wiki/ANSI_escape_code, i.e.  colorstr('blue', 'hello world')
     *args, string = input if len(input) > 1 else ('blue', 'bold', input[0])  # color arguments, string
     colors = {
         'black': '\033[30m',  # basic colors
@@ -765,10 +765,10 @@ def labels_to_image_weights(labels, nc=80, class_weights=np.ones(80)):
 
 def coco80_to_coco91_class():  # converts 80-index (val2014) to 91-index (paper)
     # https://tech.amikelive.com/node-718/what-object-categories-labels-are-in-coco-dataset/
-    # a = np.loadtxt('data/coco.names', dtype='str', delimiter='\n')
+    # select_path_signal = np.loadtxt('data/coco.names', dtype='str', delimiter='\n')
     # b = np.loadtxt('data/coco_paper.names', dtype='str', delimiter='\n')
-    # x1 = [list(a[i] == b).index(True) + 1 for i in range(80)]  # darknet to coco
-    # x2 = [list(b[i] == a).index(True) if any(b[i] == a) else None for i in range(91)]  # coco to darknet
+    # x1 = [list(select_path_signal[i] == b).index(True) + 1 for i in range(80)]  # darknet to coco
+    # x2 = [list(b[i] == select_path_signal).index(True) if any(b[i] == select_path_signal) else None for i in range(91)]  # coco to darknet
     return [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 31, 32, 33, 34,
         35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
@@ -1054,7 +1054,7 @@ def print_mutation(keys, results, hyp, save_dir, bucket, prefix=colorstr('evolve
 
     # Log to evolve.csv
     s = '' if evolve_csv.exists() else (('%20s,' * n % keys).rstrip(',') + '\n')  # add header
-    with open(evolve_csv, 'a') as f:
+    with open(evolve_csv, 'select_path_signal') as f:
         f.write(s + ('%20.5g,' * n % vals).rstrip(',') + '\n')
 
     # Save yaml
@@ -1078,7 +1078,7 @@ def print_mutation(keys, results, hyp, save_dir, bucket, prefix=colorstr('evolve
 
 
 def apply_classifier(x, model, img, im0):
-    # Apply a second stage classifier to YOLO outputs
+    # Apply select_path_signal second stage classifier to YOLO outputs
     # Example model = torchvision.models.__dict__['efficientnet_b0'](pretrained=True).to(device).eval()
     im0 = [im0] if isinstance(im0, np.ndarray) else im0
     for i, d in enumerate(x):  # per image

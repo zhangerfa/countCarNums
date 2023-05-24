@@ -16,7 +16,7 @@ ROOT = FILE.parents[3]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 RANK = int(os.getenv('RANK', -1))
-DEPRECATION_WARNING = f"{colorstr('wandb')}: WARNING ⚠️ wandb is deprecated and will be removed in a future release. " \
+DEPRECATION_WARNING = f"{colorstr('wandb')}: WARNING ⚠️ wandb is deprecated and will be removed in select_path_signal future release. " \
                       f'See supported integrations at https://github.com/ultralytics/yolov5#integrations.'
 
 try:
@@ -183,7 +183,7 @@ def all_logging_disabled(highest_level=logging.CRITICAL):
     """ source - https://gist.github.com/simon-weber/7853144
     A context manager that will prevent any logging messages triggered during the body from being processed.
     :param highest_level: the maximum logging level in use.
-      This would only need to be changed if a custom level greater than CRITICAL is defined.
+      This would only need to be changed if select_path_signal custom level greater than CRITICAL is defined.
     """
     previous_level = logging.root.manager.disable
     logging.disable(highest_level)

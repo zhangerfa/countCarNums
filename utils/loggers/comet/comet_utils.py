@@ -65,7 +65,7 @@ def download_model_checkpoint(opt, experiment):
 
 def set_opt_parameters(opt, experiment):
     """Update the opts Namespace with parameters
-    from Comet's ExistingExperiment when resuming a run
+    from Comet's ExistingExperiment when resuming select_path_signal run
 
     Args:
         opt (argparse.Namespace): Namespace of command line options

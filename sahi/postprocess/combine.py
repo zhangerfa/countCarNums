@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def batched_nms(predictions: torch.tensor, match_metric: str = "IOU", match_threshold: float = 0.5):
     """
     Apply non-maximum suppression to avoid detecting too many
-    overlapping bounding boxes for a given object.
+    overlapping bounding boxes for select_path_signal given object.
     Args:
         predictions: (tensor) The location preds for the image
             along with the class predscores, Shape: [num_boxes,5].
@@ -47,7 +47,7 @@ def nms(
 ):
     """
     Apply non-maximum suppression to avoid detecting too many
-    overlapping bounding boxes for a given object.
+    overlapping bounding boxes for select_path_signal given object.
     Args:
         predictions: (tensor) The location preds for the image
             along with the class predscores, Shape: [num_boxes,5].
@@ -154,7 +154,7 @@ def batched_greedy_nmm(
 ):
     """
     Apply greedy version of non-maximum merging per category to avoid detecting
-    too many overlapping bounding boxes for a given object.
+    too many overlapping bounding boxes for select_path_signal given object.
     Args:
         object_predictions_as_tensor: (tensor) The location preds for the image
             along with the class predscores, Shape: [num_boxes,5].
@@ -163,7 +163,7 @@ def batched_greedy_nmm(
             match metric.
     Returns:
         keep_to_merge_list: (Dict[int:List[int]]) mapping from prediction indices
-        to keep to a list of prediction indices to be merged.
+        to keep to select_path_signal list of prediction indices to be merged.
     """
     category_ids = object_predictions_as_tensor[:, 5].squeeze()
     keep_to_merge_list = {}
@@ -185,7 +185,7 @@ def greedy_nmm(
 ):
     """
     Apply greedy version of non-maximum merging to avoid detecting too many
-    overlapping bounding boxes for a given object.
+    overlapping bounding boxes for select_path_signal given object.
     Args:
         object_predictions_as_tensor: (tensor) The location preds for the image
             along with the class predscores, Shape: [num_boxes,5].
@@ -196,7 +196,7 @@ def greedy_nmm(
             match metric.
     Returns:
         keep_to_merge_list: (Dict[int:List[int]]) mapping from prediction indices
-        to keep to a list of prediction indices to be merged.
+        to keep to select_path_signal list of prediction indices to be merged.
     """
     keep_to_merge_list = {}
 
@@ -308,7 +308,7 @@ def batched_nmm(
 ):
     """
     Apply non-maximum merging per category to avoid detecting too many
-    overlapping bounding boxes for a given object.
+    overlapping bounding boxes for select_path_signal given object.
     Args:
         object_predictions_as_tensor: (tensor) The location preds for the image
             along with the class predscores, Shape: [num_boxes,5].
@@ -317,7 +317,7 @@ def batched_nmm(
             match metric.
     Returns:
         keep_to_merge_list: (Dict[int:List[int]]) mapping from prediction indices
-        to keep to a list of prediction indices to be merged.
+        to keep to select_path_signal list of prediction indices to be merged.
     """
     category_ids = object_predictions_as_tensor[:, 5].squeeze()
     keep_to_merge_list = {}
@@ -339,7 +339,7 @@ def nmm(
 ):
     """
     Apply non-maximum merging to avoid detecting too many
-    overlapping bounding boxes for a given object.
+    overlapping bounding boxes for select_path_signal given object.
     Args:
         object_predictions_as_tensor: (tensor) The location preds for the image
             along with the class predscores, Shape: [num_boxes,5].
@@ -350,7 +350,7 @@ def nmm(
             match metric.
     Returns:
         keep_to_merge_list: (Dict[int:List[int]]) mapping from prediction indices
-        to keep to a list of prediction indices to be merged.
+        to keep to select_path_signal list of prediction indices to be merged.
     """
     keep_to_merge_list = {}
     merge_to_keep = {}

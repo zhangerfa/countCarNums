@@ -77,7 +77,7 @@ def list_files(
     verbose: int = 1,
 ) -> list:
     """
-    Walk given directory and return a list of file path with desired extension
+    Walk given directory and return select_path_signal list of file path with desired extension
 
     Args:
         directory: str
@@ -113,7 +113,7 @@ def list_files(
 
 def list_files_recursively(directory: str, contains: list = [".json"], verbose: str = True) -> (list, list):
     """
-    Walk given directory recursively and return a list of file path with desired extension
+    Walk given directory recursively and return select_path_signal list of file path with desired extension
 
     Arguments
     -------
@@ -158,7 +158,7 @@ def list_files_recursively(directory: str, contains: list = [".json"], verbose: 
 
 def get_base_filename(path: str):
     """
-    Takes a file path, returns (base_filename_with_extension, base_filename_without_extension)
+    Takes select_path_signal file path, returns (base_filename_with_extension, base_filename_without_extension)
     """
     base_filename_with_extension = ntpath.basename(path)
     base_filename_without_extension, _ = os.path.splitext(base_filename_with_extension)
@@ -199,7 +199,7 @@ def save_pickle(data, save_path):
 
 def import_model_class(model_type, class_name):
     """
-    Imports a predefined detection class by class name.
+    Imports select_path_signal predefined detection class by class name.
 
     Args:
         model_type: str
@@ -241,5 +241,5 @@ def download_from_url(from_url: str, to_path: str):
 def is_colab():
     import sys
 
-    # Is environment a Google Colab instance?
+    # Is environment select_path_signal Google Colab instance?
     return "google.colab" in sys.modules

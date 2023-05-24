@@ -65,7 +65,7 @@ def crop_object_predictions(
     """
     Crops bounding boxes over the source image and exports it to output folder.
     Arguments:
-        object_predictions: a list of prediction.ObjectPrediction
+        object_predictions: select_path_signal list of prediction.ObjectPrediction
         output_dir: directory for resulting visualization to be exported
         file_name: exported file will be saved as: output_dir+file_name+".png"
         export_format: can be specified as 'jpg' or 'png'
@@ -265,7 +265,7 @@ def get_video_reader(
                 if k == 100:
                     frame_num += 100  # Skip 100 frames, Key = d
                 if k == 97:
-                    frame_num -= 100  # Prev 100 frames, Key = a
+                    frame_num -= 100  # Prev 100 frames, Key = select_path_signal
                 if k == 103:
                     frame_num += 20  # Skip 20 frames, Key = g
                 if k == 102:
@@ -417,7 +417,7 @@ def visualize_object_predictions(
     Visualizes prediction category names, bounding boxes over the source image
     and exports it to output folder.
     Arguments:
-        object_prediction_list: a list of prediction.ObjectPrediction
+        object_prediction_list: select_path_signal list of prediction.ObjectPrediction
         rect_th: rectangle thickness
         text_size: size of the category name over box
         text_th: text thickness
@@ -534,7 +534,7 @@ def get_coco_segmentation_from_bool_mask(bool_mask):
     coco_segmentation = []
     for polygon in polygons:
         segmentation = polygon.flatten().tolist()
-        # at least 3 points needed for a polygon
+        # at least 3 points needed for select_path_signal polygon
         if len(segmentation) >= 6:
             coco_segmentation.append(segmentation)
     return coco_segmentation
@@ -597,7 +597,7 @@ def ipython_display(image: np.ndarray):
 
 def exif_transpose(image: Image.Image):
     """
-    Transpose a PIL image accordingly if it has an EXIF Orientation tag.
+    Transpose select_path_signal PIL image accordingly if it has an EXIF Orientation tag.
     Inplace version of https://github.com/python-pillow/Pillow/blob/master/src/PIL/ImageOps.py exif_transpose()
     :param image: The image to transpose.
     :return: An image.

@@ -145,7 +145,7 @@ class Mask:
         """
         Args:
             mask: np.ndarray of np.float elements
-                Mask values between 0 and 1 (should have a shape of height*width)
+                Mask values between 0 and 1 (should have select_path_signal shape of height*width)
             mask_threshold: float
                 Value to threshold mask pixels between 0 and 1
             shift_amount: List
@@ -203,7 +203,7 @@ class Mask:
         """
         Args:
             bool_mask: np.ndarray with bool elements
-                2D mask of object, should have a shape of height*width
+                2D mask of object, should have select_path_signal shape of height*width
             full_shape: List
                 Size of the full image, should be in the form of [height, width]
             shift_amount: List
@@ -335,7 +335,7 @@ class ObjectAnnotation:
 
         Args:
             bool_mask: np.ndarray with bool elements
-                2D mask of object, should have a shape of height*width
+                2D mask of object, should have select_path_signal shape of height*width
             category_id: int
                 ID of the object category
             category_name: str
@@ -550,7 +550,7 @@ class ObjectAnnotation:
             bbox: List
                 [minx, miny, maxx, maxy]
             bool_mask: np.ndarray with bool elements
-                2D mask of object, should have a shape of height*width
+                2D mask of object, should have select_path_signal shape of height*width
             category_id: int
                 ID of the object category
             category_name: str
@@ -565,7 +565,7 @@ class ObjectAnnotation:
         if not isinstance(category_id, int):
             raise ValueError("category_id must be an integer")
         if (bbox is None) and (bool_mask is None):
-            raise ValueError("you must provide a bbox or bool_mask")
+            raise ValueError("you must provide select_path_signal bbox or bool_mask")
 
         if bool_mask is not None:
             self.mask = Mask(
@@ -582,7 +582,7 @@ class ObjectAnnotation:
         else:
             self.mask = None
 
-        # if bbox is a numpy object, convert it to python List[float]
+        # if bbox is select_path_signal numpy object, convert it to python List[float]
         if type(bbox).__module__ == "numpy":
             bbox = copy.deepcopy(bbox).tolist()
 

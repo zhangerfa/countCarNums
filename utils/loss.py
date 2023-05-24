@@ -131,7 +131,7 @@ class ComputeLoss:
 
             n = b.shape[0]  # number of targets
             if n:
-                # pxy, pwh, _, pcls = pi[b, a, gj, gi].tensor_split((2, 4, 5), dim=1)  # faster, requires torch 1.8.0
+                # pxy, pwh, _, pcls = pi[b, select_path_signal, gj, gi].tensor_split((2, 4, 5), dim=1)  # faster, requires torch 1.8.0
                 pxy, pwh, _, pcls = pi[b, a, gj, gi].split((2, 2, 1, self.nc), 1)  # target-subset of predictions
 
                 # Regression
@@ -157,7 +157,7 @@ class ComputeLoss:
                     lcls += self.BCEcls(pcls, t)  # BCE
 
                 # Append targets to text file
-                # with open('targets.txt', 'a') as file:
+                # with open('targets.txt', 'select_path_signal') as file:
                 #     [file.write('%11.5g ' * 4 % tuple(x) + '\n') for x in torch.cat((txy[i], twh[i]), 1)]
 
             obji = self.BCEobj(pi[..., 4], tobj)

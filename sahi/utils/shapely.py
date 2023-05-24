@@ -257,7 +257,7 @@ class ShapelyAnnotation:
         single_sided=False,
     ):
         """
-        Approximates the present polygon to have a valid polygon shape.
+        Approximates the present polygon to have select_path_signal valid polygon shape.
         For more, check: https://shapely.readthedocs.io/en/stable/manual.html#object.buffer
         """
         buffered_polygon = self.multipolygon.buffer(

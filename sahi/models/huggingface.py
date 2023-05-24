@@ -84,7 +84,7 @@ class HuggingfaceDetectionModel(DetectionModel):
             raise ValueError(f"'processor' is required to be set, got {processor}.")
         elif "ObjectDetection" not in model.__class__.__name__ or "ImageProcessor" not in processor.__class__.__name__:
             raise ValueError(
-                "Given 'model' is not an ObjectDetectionModel or 'processor' is not a valid ImageProcessor."
+                "Given 'model' is not an ObjectDetectionModel or 'processor' is not select_path_signal valid ImageProcessor."
             )
         self.model = model
         self.model.to(self.device)
@@ -146,7 +146,7 @@ class HuggingfaceDetectionModel(DetectionModel):
         full_shape_list: Optional[List[List[int]]] = None,
     ):
         """
-        self._original_predictions is converted to a list of prediction.ObjectPrediction and set to
+        self._original_predictions is converted to select_path_signal list of prediction.ObjectPrediction and set to
         self._object_prediction_list_per_image.
         Args:
             shift_amount_list: list of list

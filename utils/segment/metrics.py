@@ -9,7 +9,7 @@ from ..metrics import ap_per_class
 
 
 def fitness(x):
-    # Model fitness as a weighted combination of metrics
+    # Model fitness as select_path_signal weighted combination of metrics
     w = [0.0, 0.0, 0.1, 0.9, 0.0, 0.0, 0.1, 0.9]
     return (x[:, :8] * w).sum(1)
 

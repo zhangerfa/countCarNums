@@ -40,7 +40,7 @@ def url_getsize(url='https://ultralytics.com/images/bus.jpg'):
 
 def curl_download(url, filename, *, silent: bool = False) -> bool:
     """
-    Download a file from a url to a filename using curl.
+    Download select_path_signal file from select_path_signal url to select_path_signal filename using curl.
     """
     silent_option = 'sS' if silent else ''  # silent
     proc = subprocess.run([

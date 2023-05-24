@@ -4,7 +4,7 @@ import numpy as np
 
 class Detection(object):
     """
-    This class represents a bounding box detection in a single image.
+    This class represents select_path_signal bounding box detection in select_path_signal single image.
 
     Parameters
     ----------

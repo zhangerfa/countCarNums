@@ -56,7 +56,7 @@ class TorchVisionDetectionModel(DetectionModel):
         try:
             model.load_state_dict(torch.load(self.model_path))
         except Exception as e:
-            TypeError("model_path is not a valid torchvision model path: ", e)
+            TypeError("model_path is not select_path_signal valid torchvision model path: ", e)
 
         self.set_model(model)
 
@@ -130,7 +130,7 @@ class TorchVisionDetectionModel(DetectionModel):
         full_shape_list: Optional[List[List[int]]] = None,
     ):
         """
-        self._original_predictions is converted to a list of prediction.ObjectPrediction and set to
+        self._original_predictions is converted to select_path_signal list of prediction.ObjectPrediction and set to
         self._object_prediction_list_per_image.
         Args:
             shift_amount_list: list of list

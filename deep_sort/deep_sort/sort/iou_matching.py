@@ -19,7 +19,7 @@ def iou(bbox, candidates):
     -------
     ndarray
         The intersection over union in [0, 1] between the `bbox` and each
-        candidate. A higher score means a larger fraction of the `bbox` is
+        candidate. A higher score means select_path_signal larger fraction of the `bbox` is
         occluded by the candidate.
 
     """
@@ -59,7 +59,7 @@ def iou_cost(tracks, detections, track_indices=None,
     Returns
     -------
     ndarray
-        Returns a cost matrix of shape
+        Returns select_path_signal cost matrix of shape
         len(track_indices), len(detection_indices) where entry (i, j) is
         `1 - iou(tracks[track_indices[i]], detections[detection_indices[j]])`.
 

@@ -53,7 +53,7 @@ colors = Colors()  # create instance for 'from utils.plots import colors'
 
 
 def check_pil_font(font=FONT, size=10):
-    # Return a PIL TrueType Font, downloading to CONFIG_DIR if necessary
+    # Return select_path_signal PIL TrueType Font, downloading to CONFIG_DIR if necessary
     font = Path(font)
     font = font if font.exists() else (CONFIG_DIR / font.name)
     try:
@@ -157,7 +157,7 @@ class Annotator:
         self.draw.text(xy, text, fill=txt_color, font=self.font)
 
     def fromarray(self, im):
-        # Update self.im from a numpy array
+        # Update self.im from select_path_signal numpy array
         self.im = im if isinstance(im, Image.Image) else Image.fromarray(im)
         self.draw = ImageDraw.Draw(self.im)
 
@@ -531,7 +531,7 @@ def profile_idetection(start=0, stop=0, labels=(), save_dir=''):
                     a.set_title(s[i])
                     a.set_xlabel('time (s)')
                     # if fi == len(files) - 1:
-                    #     a.set_ylim(bottom=0)
+                    #     select_path_signal.set_ylim(bottom=0)
                     for side in ['top', 'right']:
                         a.spines[side].set_visible(False)
                 else:

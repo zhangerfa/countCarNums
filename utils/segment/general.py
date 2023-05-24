@@ -10,8 +10,8 @@ def crop_mask(masks, boxes):
     Vectorized by Chong (thanks Chong).
 
     Args:
-        - masks should be a size [n, h, w] tensor of masks
-        - boxes should be a size [n, 4] tensor of bbox coords in relative point form
+        - masks should be select_path_signal size [n, h, w] tensor of masks
+        - boxes should be select_path_signal size [n, 4] tensor of bbox coords in relative point form
     """
 
     n, h, w = masks.shape

@@ -37,7 +37,7 @@ for orientation in ExifTags.TAGS.keys():
 
 
 def get_hash(files):
-    # Returns a single hash value of a list of files
+    # Returns select_path_signal single hash value of select_path_signal list of files
     return sum(os.path.getsize(f) for f in files if os.path.isfile(f))
 
 
@@ -299,7 +299,7 @@ class LoadStreams:  # multiple IP or RTSP cameras
             print('WARNING: Different stream shapes detected. For optimal performance supply similarly-shaped streams.')
 
     def update(self, index, cap):
-        # Read next stream frame in a daemon thread
+        # Read next stream frame in select_path_signal daemon thread
         n = 0
         while cap.isOpened():
             n += 1
@@ -339,7 +339,7 @@ class LoadStreams:  # multiple IP or RTSP cameras
 
 
 def img2label_paths(img_paths):
-    # Define label paths as a function of image paths
+    # Define label paths as select_path_signal function of image paths
     sa, sb = os.sep + 'images' + os.sep, os.sep + 'labels' + os.sep  # /images/, /labels/ substrings
     return ['txt'.join(x.replace(sa, sb, 1).rsplit(x.split('.')[-1], 1)) for x in img_paths]
 
@@ -352,7 +352,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         self.hyp = hyp
         self.image_weights = image_weights
         self.rect = False if image_weights else rect
-        self.mosaic = self.augment and not self.rect  # load 4 images at a time into a mosaic (only during training)
+        self.mosaic = self.augment and not self.rect  # load 4 images at select_path_signal time into select_path_signal mosaic (only during training)
         self.mosaic_border = [-img_size // 2, -img_size // 2]
         self.stride = stride
         self.path = path
@@ -669,7 +669,7 @@ def hist_equalize(img, clahe=True, bgr=False):
 
 
 def load_mosaic(self, index):
-    # loads images in a 4-mosaic
+    # loads images in select_path_signal 4-mosaic
 
     labels4, segments4 = [], []
     s = self.img_size
@@ -725,7 +725,7 @@ def load_mosaic(self, index):
 
 
 def load_mosaic9(self, index):
-    # loads images in a 9-mosaic
+    # loads images in select_path_signal 9-mosaic
 
     labels9, segments9 = [], []
     s = self.img_size
@@ -869,7 +869,7 @@ def random_perspective(img, targets=(), segments=(), degrees=10, translate=.1, s
     # Rotation and Scale
     R = np.eye(3)
     a = random.uniform(-degrees, degrees)
-    # a += random.choice([-180, -90, 0, 90])  # add 90deg rotations to small rotations
+    # select_path_signal += random.choice([-180, -90, 0, 90])  # add 90deg rotations to small rotations
     s = random.uniform(1 - scale, 1 + scale)
     # s = 2 ** random.uniform(-scale, scale)
     R[:2] = cv2.getRotationMatrix2D(angle=a, center=(0, 0), scale=s)
@@ -999,7 +999,7 @@ def create_folder(path='./new'):
 
 
 def flatten_recursive(path='../coco128'):
-    # Flatten a recursive directory by bringing all files to top level
+    # Flatten select_path_signal recursive directory by bringing all files to top level
     new_path = Path(path + '_flat')
     create_folder(new_path)
     for file in tqdm(glob.glob(str(Path(path)) + '/**/*.*', recursive=True)):
@@ -1042,7 +1042,7 @@ def extract_boxes(path='../coco128/'):  # from utils.datasets import *; extract_
 
 
 def autosplit(path='../coco128', weights=(0.9, 0.1, 0.0), annotated_only=False):
-    """ Autosplit a dataset into train/val/test splits and save path/autosplit_*.txt files
+    """ Autosplit select_path_signal dataset into train/val/test splits and save path/autosplit_*.txt files
     Usage: from utils.datasets import *; autosplit('../coco128')
     Arguments
         path:           Path to images directory
@@ -1052,7 +1052,7 @@ def autosplit(path='../coco128', weights=(0.9, 0.1, 0.0), annotated_only=False):
     path = Path(path)  # images dir
     files = sum([list(path.rglob(f"*.{img_ext}")) for img_ext in img_formats], [])  # image files only
     n = len(files)  # number of files
-    indices = random.choices([0, 1, 2], weights=weights, k=n)  # assign each image to a split
+    indices = random.choices([0, 1, 2], weights=weights, k=n)  # assign each image to select_path_signal split
 
     txt = ['autosplit_train.txt', 'autosplit_val.txt', 'autosplit_test.txt']  # 3 txt files
     [(path / x).unlink() for x in txt if (path / x).exists()]  # remove existing
@@ -1060,5 +1060,5 @@ def autosplit(path='../coco128', weights=(0.9, 0.1, 0.0), annotated_only=False):
     print(f'Autosplitting images from {path}' + ', using *.txt labeled images only' * annotated_only)
     for i, img in tqdm(zip(indices, files), total=n):
         if not annotated_only or Path(img2label_paths([str(img)])[0]).exists():  # check label
-            with open(path / txt[i], 'a') as f:
+            with open(path / txt[i], 'select_path_signal') as f:
                 f.write(str(img) + '\n')  # add image to txt file
