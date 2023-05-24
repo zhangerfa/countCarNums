@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1125</width>
+    <height>849</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>330</y>
+      <width>379</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>选择视频类型</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="video_type_box_2">
+           <item>
+            <property name="text">
+             <string>航拍视频</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>路侧监控视频</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QCheckBox" name="show_video_box">
+             <property name="text">
+              <string>是否展示检测过程</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="save_video_box">
+             <property name="text">
+              <string>是否保存检测视频</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>290</y>
+      <width>114</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>选择视频文件夹</string>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="pathText">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>290</y>
+      <width>251</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">high: 30
+</string>
+    </property>
+    <property name="tabStopWidth">
+     <number>40</number>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="pathText_2">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>486</x>
+      <y>243</y>
+      <width>231</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">high: 30
+</string>
+    </property>
+    <property name="tabStopWidth">
+     <number>40</number>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>240</y>
+      <width>129</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>选择文件保存路径</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>440</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>开始检测</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1125</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>selectFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>431</x>
+     <y>343</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>530</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>show_video_box</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>change_if_show_video()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>590</x>
+     <y>374</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>879</x>
+     <y>403</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>save_video_box</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>change_if_save_video()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>614</x>
+     <y>416</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>823</x>
+     <y>121</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>start()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>512</x>
+     <y>475</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>425</x>
+     <y>609</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>selectSavePath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>366</x>
+     <y>275</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>163</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>selectFile()</slot>
+  <slot>selectSavePath()</slot>
+  <slot>change_if_show_video()</slot>
+  <slot>change_if_save_video()</slot>
+  <slot>start()</slot>
+ </slots>
+</ui>
