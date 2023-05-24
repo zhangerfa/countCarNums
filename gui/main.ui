@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1125</width>
-    <height>849</height>
+    <width>719</width>
+    <height>506</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>330</y>
-      <width>379</width>
+      <x>130</x>
+      <y>190</y>
+      <width>424</width>
       <height>80</height>
      </rect>
     </property>
@@ -65,6 +65,13 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QCheckBox" name="save_video_box_2">
+             <property name="text">
+              <string>是否使用小物体检测增强</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>
@@ -76,8 +83,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>290</y>
+      <x>130</x>
+      <y>150</y>
       <width>114</width>
       <height>28</height>
      </rect>
@@ -92,10 +99,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>480</x>
-      <y>290</y>
-      <width>251</width>
-      <height>21</height>
+      <x>270</x>
+      <y>150</y>
+      <width>231</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -112,25 +119,31 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>486</x>
-      <y>243</y>
+      <x>270</x>
+      <y>100</y>
       <width>231</width>
-      <height>20</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">high: 30
 </string>
     </property>
+    <property name="documentTitle">
+     <string/>
+    </property>
     <property name="tabStopWidth">
      <number>40</number>
+    </property>
+    <property name="placeholderText">
+     <string>不设置默认在视频路径下创建output文件夹来存放输出</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>240</y>
+      <x>130</x>
+      <y>100</y>
       <width>129</width>
       <height>28</height>
      </rect>
@@ -142,8 +155,8 @@
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>440</y>
+      <x>230</x>
+      <y>300</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -158,7 +171,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1125</width>
+     <width>719</width>
      <height>26</height>
     </rect>
    </property>
