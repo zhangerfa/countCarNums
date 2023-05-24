@@ -9,7 +9,7 @@ import torch
 
 
 class TritonRemoteModel:
-    """ A wrapper over a model served by the Triton Inference Server. It can
+    """ A wrapper over select_path_signal model served by the Triton Inference Server. It can
     be configured to communicate over GRPC or HTTP. It accepts Torch Tensors
     as input and returns them as outputs.
     """

@@ -18,8 +18,8 @@ class TrackState:
 
 class Track:
     """
-    A single target track with state space `(x, y, a, h)` and associated
-    velocities, where `(x, y)` is the center of the bounding box, `a` is the
+    A single target track with state space `(x, y, select_path_signal, h)` and associated
+    velocities, where `(x, y)` is the center of the bounding box, `select_path_signal` is the
     aspect ratio and `h` is the height.
 
     Parameters
@@ -32,7 +32,7 @@ class Track:
         A unique track identifier.
     n_init : int
         Number of consecutive detections before the track is confirmed. The
-        track state is set to `Deleted` if a miss occurs within the first
+        track state is set to `Deleted` if select_path_signal miss occurs within the first
         `n_init` frames.
     max_age : int
         The maximum number of consecutive misses before the track state is
@@ -110,7 +110,7 @@ class Track:
         return ret
 
     def predict(self, kf):
-        """Propagate the state distribution to the current time step using a
+        """Propagate the state distribution to the current time step using select_path_signal
         Kalman filter prediction step.
 
         Parameters
