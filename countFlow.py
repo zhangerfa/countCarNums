@@ -148,6 +148,7 @@ def draw_detect_line(video_path):
         if k in [ord(x) for x in ['q', 'Q']]:
             break
     # 保存划线结果
+    file_name = video_path.split('/')[-1]
     sava_path = rf"{out_path}/{file_name.split('.')[0]}"
     if not os.path.exists(sava_path):
         os.mkdir(sava_path)
@@ -169,6 +170,7 @@ def countFlow(video_path, use_sahi=False, save_video=True, show_video=False, use
     # 检索该视频的检测线位置数据
     global enter_lane_set
     global exit_lane_set
+    file_name = video_path.split('/')[-1]
     if file_name not in video_detect_line_dict.keys():
         print(f"{file_name}未画检测线")
         return
@@ -397,12 +399,14 @@ exit_lane_set = {}
 img = None
 # 存储各视频的检测线坐标
 video_detect_line_dict = {}
+# 输出路径
+out_path = None
 
-if __name__ == '__main__':
-    # 带处理的视频所在路径
-    path = r"..\video\jiankong"
+
+def start(path, save_path=None, use_sahi=False, save_video=True, show_video=False, use_uav=False):
     # 运行结果保存路径
-    out_path = rf'{path}/output'
+    global out_path
+    out_path = rf'{path}/output' if save_path is None else save_path
     if not os.path.exists(out_path):
         os.mkdir(out_path)
     # 为此路径下所有视频画检测线
@@ -414,4 +418,23 @@ if __name__ == '__main__':
     for file_name in os.listdir(path):
         if file_name.split('.')[-1] == 'mp4':
             # 检索当前视频的检测线坐标
-            countFlow(rf'{path}/{file_name}', show_video=True)
+            countFlow(rf'{path}/{file_name}', use_sahi, save_video, show_video, use_uav)
+
+
+# if __name__ == '__main__':
+#     # 带处理的视频所在路径
+#     path = r"..\video\jiankong"
+#     # 运行结果保存路径
+#     out_path = rf'{path}/output'
+#     if not os.path.exists(out_path):
+#         os.mkdir(out_path)
+#     # 为此路径下所有视频画检测线
+#     for file_name in os.listdir(path):
+#         if file_name.split('.')[-1] == 'mp4':
+#             # 画检测线
+#             draw_detect_line(rf'{path}/{file_name}')
+#     # 统计此路径下所有视频中的流量，并将数据保存在此路径的output文件夹中
+#     for file_name in os.listdir(path):
+#         if file_name.split('.')[-1] == 'mp4':
+#             # 检索当前视频的检测线坐标
+#             countFlow(rf'{path}/{file_name}')
