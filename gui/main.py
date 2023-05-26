@@ -124,4 +124,30 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(_translate("MainWindow", "选择文件保存路径"))
         self.pushButton_3.setText(_translate("MainWindow", "开始检测"))
         self.label_2.setText(_translate("MainWindow", "全达流量统计软件"))
+
+    def get_symmetry_axis(x1, y1, x2, y2):
+        # 计算矩形框的中心点坐标
+        x_center = (x1 + x2) // 2
+        y_center = (y1 + y2) // 2
+        # 判断长和宽的关系
+        if abs(x1 - x2) > abs(y1 - y2):
+            # 矩形较长，对称轴为y轴
+            axis_x = x_center
+            axis_y = y_center
+            return axis_x, y1, axis_x, y2
+        else:
+            # 矩形较宽，对称轴为x轴
+            axis_x = x_center
+            axis_y = y_center
+            return x1, axis_y, x2, axis_y
+    while True:
+        try:
+            s = input()  # 接收输入的字符串
+            x1, y1, x2, y2 = map(int, s.split())  # 将字符串转化为坐标
+            # 调用函数获取对称轴坐标并输出
+            print(*get_symmetry_axis(x1, y1, x2, y2))
+        except:
+            # 若无法继续输入，则退出循环
+            break
+
 import gui.back_rc
