@@ -124,5 +124,5 @@ if __name__ == '__main__':
     mainUi.select_path_signal.connect(select_path)
 
     # 展示登录窗口
-    mainUi.show()
+    loginUi.show()
     sys.exit(app.exec_())
