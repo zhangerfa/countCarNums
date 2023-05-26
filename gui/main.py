@@ -133,21 +133,12 @@ class Ui_MainWindow(object):
         if abs(x1 - x2) > abs(y1 - y2):
             # 矩形较长，对称轴为y轴
             axis_x = x_center
-            axis_y = y_center
-            return axis_x, y1, axis_x, y2
+            axis_y = y1
+            return axis_x, axis_y, axis_x, y2
         else:
             # 矩形较宽，对称轴为x轴
-            axis_x = x_center
+            axis_x = x1
             axis_y = y_center
-            return x1, axis_y, x2, axis_y
-    while True:
-        try:
-            s = input()  # 接收输入的字符串
-            x1, y1, x2, y2 = map(int, s.split())  # 将字符串转化为坐标
-            # 调用函数获取对称轴坐标并输出
-            print(*get_symmetry_axis(x1, y1, x2, y2))
-        except:
-            # 若无法继续输入，则退出循环
-            break
+            return axis_x, axis_y, x2, axis_y
 
 import gui.back_rc
