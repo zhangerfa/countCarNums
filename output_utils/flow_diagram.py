@@ -1,6 +1,7 @@
 from Intersection import *
 import pandas as pd
 
+
 def excel_format_conversion(path):
     # 读取excel文件，将excel文件中的数据转换为字典形式
     # path: str, 流量流向的excel文件路径：列为进口道、行为出口道，行列都以东南西北命名
@@ -20,6 +21,7 @@ def excel_format_conversion(path):
             flow_dict[enter + "进口"][exit + "出口"] = df.loc[enter, exit]
     return flow_dict
 
+
 def draw_flow_diagram(flow_dict, color_dict=None, name="路口"):
     # flow_dict: dict, 流量流向字典
     # flow_dict = {"高新二路南进口": {"光谷一路西出口": 100,
@@ -37,8 +39,9 @@ def draw_flow_diagram(flow_dict, color_dict=None, name="路口"):
     intersection = intersection_factory(flow_dict, name=name, color_dict=color_dict)
     intersection.draw_flow()
 
+
 if __name__ == "__main__":
-    path = r"D:\oneDrive\文档\工作\flow_diagram\流量流向表.xlsx"
+    path = r"F:\zhangBo\CVcount\countCarNums\output_utils\流量流向表.xlsx"
     color_dict = {"南": "#00B050",
                   "北": "#FF0000",
                   "西": "#7030A0",

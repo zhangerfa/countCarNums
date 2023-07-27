@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
-from matplotlib.patches import Arrow
-import numpy as np
-from scipy.interpolate import interp1d
+from sympy import *
+
 
 # 路口类
 class Intersection:
@@ -13,27 +12,51 @@ class Intersection:
         self.exit_ls = exit_ls
         self.name = name
         if color_dict is None:
-            self.color_dict = {"南": "red",
-                               "北": "blue",
-                               "西": "green",
-                               "东": "purple"}
+            self.color_dict = {"南": "#00B050",
+                               "北": "#FF0000",
+                               "西": "#7030A0",
+                               "东": "#FFC000"}
         else:
             self.color_dict = color_dict
 
-    def draw_flow(self):
+    def draw_flow(self, use_curve=True):
+        # use_curve: bool, 是否使用曲线
         # 设置各入口道和出口道的坐标
         self.set_point()
         # 流量和线宽换算系数
         da = 100
-        flow_front_size = 12 # 流量标注字体大小
+        flow_front_size = 12  # 流量标注字体大小
         # 画出各流向流量
         plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
         plt.figure(figsize=(10, 10))
         for enter in self.enter_ls:
             for (exit, flow) in enter.flow_dict.items():
                 # 画出流向流量：流量越大，线条越粗，相同进口道流出流量颜色相同
-                plt.plot([enter.x, exit.x], [enter.y, exit.y],
-                         color=enter.color, linewidth=flow / da)
+                # 判断是否使用曲线
+                if use_curve and enter.x != exit.x and enter.y != exit.y:
+                    # 曲线
+                    # rad=0.4表示曲线的弯曲程度
+                    # 正值向右弯，负值向左弯
+                    rad = -0.4
+                    if (("北" in enter.name and "西" in exit.name) or
+                            ("西" in enter.name and "南" in exit.name) or
+                            ("南" in enter.name and "东" in exit.name) or
+                            ("东" in enter.name and "北" in exit.name)):
+                        rad *= -1
+                    plt.annotate("",
+                                 xy=(enter.x, enter.y),
+                                 xytext=(exit.x, exit.y),
+                                 size=20,
+                                 arrowprops=dict(color=enter.color,
+                                                 arrowstyle="-",
+                                                 connectionstyle=f"arc3,rad={rad}",
+                                                 linewidth=flow / da
+                                                 )
+                                 )
+                else:
+                    # 直线
+                    plt.plot([enter.x, exit.x], [enter.y, exit.y],
+                             color=enter.color, linewidth=flow / da)
                 # 标出流量
                 dx = 0.1 if enter.x == exit.x else -0.5 if enter.x > exit.x else 0.5
                 dy = 0.1 if enter.y == exit.y else -0.5 if enter.y > exit.y else 0.5
@@ -45,7 +68,7 @@ class Intersection:
                 continue
             plt.plot([enter.x, enter.x + enter.off[0] * 0.9],
                      [enter.y, enter.y + enter.off[1] * 0.9],
-                        color=enter.color, linewidth=enter.flow / da)
+                     color=enter.color, linewidth=enter.flow / da)
             # 标出流量
             dx = 0.1 if enter.off[0] == 0 else 0
             dy = 0.1 if enter.off[1] == 0 else 0
@@ -75,8 +98,8 @@ class Intersection:
                          enter.name, fontsize=15, rotation=90)
             else:
                 plt.text(enter.x + 2 * enter.off[0],
-                     enter.y + 2 * enter.off[1],
-                     enter.name, fontsize=15)
+                         enter.y + 2 * enter.off[1],
+                         enter.name, fontsize=15)
         # 隐藏坐标轴
         plt.axis('off')
         # 设置标题
@@ -154,6 +177,7 @@ class Point:
 
     def __hash__(self):
         return hash((self.name, self.x, self.y))
+
 
 # 获取路口对象的工厂方法
 def intersection_factory(flow_dict, name="路口", color_dict=None):
