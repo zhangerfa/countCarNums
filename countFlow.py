@@ -1,3 +1,4 @@
+import registration
 from sahi.predict import get_sliced_prediction
 
 from detector import Detector
@@ -158,7 +159,7 @@ def draw_detect_line(video_path):
     exit_lane_set = {}
 
 
-def countFlow(video_path, use_sahi=False, save_video=True, show_video=False, use_uav=False):
+def countFlow(video_path, use_sahi=False, save_video=True, show_video=False, use_uav=True):
     start_time = time.time()
     # -------------------------------------配置信息
     # use_sahi = False  # 是否使用 sahi 算法增强检测结果
@@ -240,6 +241,8 @@ def countFlow(video_path, use_sahi=False, save_video=True, show_video=False, use
     frame_count = 0
     # 记录当前处理是第几分钟
     minute = 0
+    pre_im = None  # 记录上一帧图片
+    im = None  # 记录当前帧图片
     while True:
         frame_count += 1
         if frame_count % (fps * 60) == 0:
@@ -247,12 +250,23 @@ def countFlow(video_path, use_sahi=False, save_video=True, show_video=False, use
             print(f"{minute}min已处理完毕")
             frame_count = 0
         # 读取每帧图片
+        if im is not None:
+            pre_im = im
         _, im = capture.read()
         if im is None:
             break
-
         # 缩小尺寸
         im = cv2.resize(im, (out_width, out_height))
+        # --------------------------------------------检测线配准
+        if pre_im is not None:
+            for key, value in enter_lane_set.items():
+                ps = [(value[0], value[1]), (value[2], value[3])]
+                ps_ = registration.transform_line(pre_im, im, ps)
+                enter_lane_set[key] = [ps_[0][0], ps_[0][1], ps_[1][0], ps_[1][1]]
+            for key, value in exit_lane_set.items():
+                ps = [(value[0], value[1]), (value[2], value[3])]
+                ps_ = registration.transform_line(pre_im, im, ps)
+                exit_lane_set[key] = [ps_[0][0], ps_[0][1], ps_[1][0], ps_[1][1]]
         # --------------------------------------------检测、追踪、流量统计
         # 检测当前帧 -> 获得 bboxes（[x1, y1, x2, y2, clsID, conf]列表）
         if use_sahi:
@@ -421,20 +435,20 @@ def start(path, save_path=None, use_sahi=False, save_video=True, show_video=Fals
             countFlow(rf'{path}/{file_name}', use_sahi, save_video, show_video, use_uav)
 
 
-# if __name__ == '__main__':
-#     # 带处理的视频所在路径
-#     path = r"..\video\jiankong"
-#     # 运行结果保存路径
-#     out_path = rf'{path}/output'
-#     if not os.path.exists(out_path):
-#         os.mkdir(out_path)
-#     # 为此路径下所有视频画检测线
-#     for file_name in os.listdir(path):
-#         if file_name.split('.')[-1] == 'mp4':
-#             # 画检测线
-#             draw_detect_line(rf'{path}/{file_name}')
-#     # 统计此路径下所有视频中的流量，并将数据保存在此路径的output文件夹中
-#     for file_name in os.listdir(path):
-#         if file_name.split('.')[-1] == 'mp4':
-#             # 检索当前视频的检测线坐标
-#             countFlow(rf'{path}/{file_name}')
+if __name__ == '__main__':
+    # 带处理的视频所在路径
+    path = r"..\..\video"
+    # 运行结果保存路径
+    out_path = rf'{path}\output'
+    if not os.path.exists(out_path):
+        os.mkdir(out_path)
+    # 为此路径下所有视频画检测线
+    for file_name in os.listdir(path):
+        if file_name.split('.')[-1] == 'mp4':
+            # 画检测线
+            draw_detect_line(rf'{path}/{file_name}')
+    # 统计此路径下所有视频中的流量，并将数据保存在此路径的output文件夹中
+    for file_name in os.listdir(path):
+        if file_name.split('.')[-1] == 'mp4':
+            # 检索当前视频的检测线坐标
+            countFlow(rf'{path}/{file_name}', show_video=True)
